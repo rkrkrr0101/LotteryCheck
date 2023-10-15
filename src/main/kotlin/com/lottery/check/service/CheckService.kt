@@ -1,7 +1,8 @@
 package com.lottery.check.service
 
-import com.lottery.check.domain.Speetto
-import com.lottery.check.domain.SpeettoKind
+import com.lottery.check.common.SPEETTO_CRAWLING
+import com.lottery.check.common.Speetto
+import com.lottery.check.common.SpeettoKind
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
@@ -13,10 +14,9 @@ import org.springframework.util.ObjectUtils
 @Service
 class CheckService {
     fun test(){
-        val viewerUrl = "https://dhlottery.co.kr/common.do?method=main"
-        val query = "#article > div.wrap_box.wrap1 > section.box.speetto-new.win > div.content > div > div > div > div"
-
-        val selects: Elements = getJsoupElements(null, viewerUrl, query)
+        val selects: Elements = getJsoupElements(null,
+            SPEETTO_CRAWLING.URL,
+            SPEETTO_CRAWLING.QUERY)
         val speettoList=ArrayList<Speetto>()
         for (select in selects) {
             speettoList.add(htmlToSpeetto(select))

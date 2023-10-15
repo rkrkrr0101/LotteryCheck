@@ -1,4 +1,4 @@
-package com.lottery.check.domain
+package com.lottery.check.common
 
 import java.lang.IllegalArgumentException
 
