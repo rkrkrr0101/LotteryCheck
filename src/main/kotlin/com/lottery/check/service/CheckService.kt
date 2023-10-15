@@ -14,7 +14,7 @@ import org.springframework.util.ObjectUtils
 @Service
 class CheckService {
     fun test(){
-        val selects: Elements = getJsoupElements(null,
+        val selects: Elements = getJsoupElements(
             SPEETTO_CRAWLING.URL,
             SPEETTO_CRAWLING.QUERY)
         val speettoList=ArrayList<Speetto>()
@@ -42,14 +42,10 @@ class CheckService {
         return Speetto(SpeettoKind.getSpeettoKind(kind),episode,first,second,third,quantity)
     }
 
-    fun getJsoupElements(connection: Connection?, url: String, query: String): Elements {
-        val conn = if (!ObjectUtils.isEmpty(connection)) connection else createJSoupConnection(url)
-        //var result: Elements? = null
-        if (conn != null) {
-            return conn.get().select(query)
-        }
-        return Elements()
-        //return result
+    fun getJsoupElements( url: String, query: String): Elements {
+        val conn = createJSoupConnection(url)
+        return conn.get().select(query)
+
     }
 
 
