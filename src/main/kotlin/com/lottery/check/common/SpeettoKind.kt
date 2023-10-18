@@ -16,6 +16,12 @@ enum class SpeettoKind {
                     throw IllegalArgumentException("IllegalSpeettoKind")
                 }
             }
+//        fun getConstClass(speettoKind: SpeettoKind)=
+//            when (speettoKind){
+//                TwoThousand->SPEETTO_TWOTHOUSAND()
+//                Thousand -> SPEETTO_THOUSAND()
+//                FiveHundred -> SPEETTO_FIVEHUNDRED()
+//            }
     }
 
 

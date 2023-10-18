@@ -1,14 +1,14 @@
 package com.lottery.check.service
 
-import com.lottery.check.common.SPEETTO_CRAWLING
-import com.lottery.check.common.Speetto
-import com.lottery.check.common.SpeettoKind
+import com.lottery.check.common.*
+import com.lottery.check.common.SpeettoKind.*
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.springframework.stereotype.Service
 import org.springframework.util.ObjectUtils
+import kotlin.reflect.typeOf
 
 
 @Service
@@ -21,7 +21,9 @@ class CheckService {
         for (select in selects) {
             speettoList.add(htmlToSpeetto(select))
         }
+
         println(speettoList)
+
 
 
     }
@@ -39,7 +41,12 @@ class CheckService {
             .getElementsByClass("num").text().replace(",", "").toInt()
         val quantity = select.getElementsByClass("li4")[0]
             .getElementsByClass("num").text().replace(",", "").toInt()
-        return Speetto(SpeettoKind.getSpeettoKind(kind),episode,first,second,third,quantity)
+        return when(SpeettoKind.getSpeettoKind(kind)){
+            TwoThousand -> Speetto2000(episode,first,second,third,quantity)
+            Thousand -> Speetto1000(episode, first, second, third, quantity)
+            FiveHundred -> Speetto500(episode,first,second,third,quantity)
+        }
+
     }
 
     fun getJsoupElements( url: String, query: String): Elements {
