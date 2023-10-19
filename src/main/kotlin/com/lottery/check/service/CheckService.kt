@@ -21,7 +21,9 @@ class CheckService {
         for (select in selects) {
             speettoList.add(htmlToSpeetto(select))
         }
-
+        for (speetto in speettoList) {
+            println(speetto.getQuantityLate())
+        }
         println(speettoList)
 
 
