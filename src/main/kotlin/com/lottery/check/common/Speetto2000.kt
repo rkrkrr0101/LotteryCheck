@@ -7,9 +7,6 @@ class Speetto2000(
     override val third: Int,
     override val quantityLeft: Int
 ) : Speetto {
-    private val constSpeetto:SPEETTO_TWOTHOUSAND=SPEETTO_TWOTHOUSAND()
-    override fun getQuantityLate(): Int {
-        return countQuantity(third,constSpeetto.THIRD_QUANTITY)
-    }
+    override val speettoReward:SPEETTO_REWARD=SPEETTO_TWOTHOUSAND()
 
 }

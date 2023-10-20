@@ -22,7 +22,7 @@ class CheckService {
             speettoList.add(htmlToSpeetto(select))
         }
         for (speetto in speettoList) {
-            println(speetto.getQuantityLate())
+            println("""${speetto.episode} ${speetto.getTotalRewardMoney()} ${speetto.getQuantityLate()}""")
         }
         println(speettoList)
 

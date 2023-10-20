@@ -1,5 +1,8 @@
 package com.lottery.check.common
 
+import java.math.RoundingMode
+import java.text.DecimalFormat
+
 
 
 interface Speetto {
@@ -8,17 +11,39 @@ interface Speetto {
     val second:Int
     val third:Int
     val quantityLeft:Int
-    //실수로(double) 변경?
-    fun countQuantity(crawlThirdQuantity:Int,totalThirdQuantity:Int):Int{
+    val speettoReward:SPEETTO_REWARD
 
-        if (crawlThirdQuantity==totalThirdQuantity)return 0
-        val currentThirdSoldQuantity= (totalThirdQuantity-crawlThirdQuantity)*100  //Int로 처리위해 100곱함
 
-        val currentThirdQuantityLate=(currentThirdSoldQuantity/totalThirdQuantity)
-        return currentThirdQuantityLate
+    fun countQuantity(crawlThirdQuantity: Int, totalThirdQuantity: Int): Double {
+        if (crawlThirdQuantity == totalThirdQuantity) return 0.0
+        val currentThirdSoldQuantity:Double = (totalThirdQuantity.toDouble() - crawlThirdQuantity.toDouble())
+
+        val df=DecimalFormat("#.###")
+        df.roundingMode=RoundingMode.FLOOR
+        return df.format(currentThirdSoldQuantity / totalThirdQuantity).toDouble()
     }
-    abstract fun getQuantityLate():Int
+    fun getQuantityLate():Double{
+        return countQuantity(third,speettoReward.WINNERCOUNTLIST[2])
+    }
+    fun getTotalRewardMoney():Long{
+        val rewardMoneyList= speettoReward.MONEYLIST
+        val rewardWinnersCountList= mutableListOf(first,second,third)
+        val FIRST_TO_THIRD=3
+        val etcRewardList=speettoReward.WINNERCOUNTLIST.subList(
+            FIRST_TO_THIRD,
+            speettoReward.WINNERCOUNTLIST.size
+        )
 
+        for (etcWinnerCount in etcRewardList) {
+            rewardWinnersCountList.add(( (1-getQuantityLate()) * etcWinnerCount).toInt())
+        }
+
+        var totalReward:Long=0
+        for (i in rewardMoneyList.indices) {
+            totalReward+=rewardMoneyList[i].toLong()*rewardWinnersCountList[i]
+        }
+        return totalReward
+    }
 
 
 
