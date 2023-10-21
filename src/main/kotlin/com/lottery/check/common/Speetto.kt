@@ -13,19 +13,14 @@ interface Speetto {
     val quantityLeft:Int
     val speettoReward:SPEETTO_REWARD
 
+    fun calculateRewardEfficiency():Double{
+        val totalRewardMoney=sumTotalRewardMoney()
+        val totalCostMoney=sumTotalCostMoney()
+        return roundToDecimal(totalRewardMoney.toDouble()/ totalCostMoney.toDouble())
 
-    fun countQuantity(crawlThirdQuantity: Int, totalThirdQuantity: Int): Double {
-        if (crawlThirdQuantity == totalThirdQuantity) return 0.0
-        val currentThirdSoldQuantity:Double = (totalThirdQuantity.toDouble() - crawlThirdQuantity.toDouble())
+    }
 
-        val df=DecimalFormat("#.###")
-        df.roundingMode=RoundingMode.FLOOR
-        return df.format(currentThirdSoldQuantity / totalThirdQuantity).toDouble()
-    }
-    fun getQuantityLate():Double{
-        return countQuantity(third,speettoReward.WINNERCOUNTLIST[2])
-    }
-    fun getTotalRewardMoney():Long{
+    fun sumTotalRewardMoney():Long{
         val rewardMoneyList= speettoReward.MONEYLIST
         val rewardWinnersCountList= mutableListOf(first,second,third)
         val FIRST_TO_THIRD=3
@@ -35,16 +30,40 @@ interface Speetto {
         )
 
         for (etcWinnerCount in etcRewardList) {
-            rewardWinnersCountList.add(( (1-getQuantityLate()) * etcWinnerCount).toInt())
+            rewardWinnersCountList.add(( (1-calculateSalesRate()) * etcWinnerCount).toInt())
         }
 
         var totalReward:Long=0
         for (i in rewardMoneyList.indices) {
             totalReward+=rewardMoneyList[i].toLong()*rewardWinnersCountList[i]
         }
+        println("totalReward"+totalReward)
         return totalReward
     }
 
+    fun sumTotalCostMoney():Long{
+        val cost:Long=speettoReward.COST.toLong()
+        val remainingTickets:Long= (speettoReward.TOTAL_QUANTITY.toLong()*(1-calculateSalesRate())).toLong()
+        println("totalCost"+cost*remainingTickets)
+        return cost*remainingTickets
+    }
+    fun calculateSalesRate(): Double {
+        val totalThirdQuantity=speettoReward.WINNERCOUNTLIST[2]
+        if (third == totalThirdQuantity) return 0.0
+        val currentThirdSoldQuantity:Double = (totalThirdQuantity.toDouble() - third.toDouble())
+
+        return roundToDecimal(currentThirdSoldQuantity / totalThirdQuantity)
+    }
+    private fun roundToDecimal(num:Double,decimalPlaces:Int=3):Double{
+        var decimalPlaceString=""
+        for(i in 1..decimalPlaces){
+            decimalPlaceString+="#"
+        }
+        val df=DecimalFormat("#.$decimalPlaceString")
+        df.roundingMode=RoundingMode.FLOOR
+        return df.format(num).toDouble()
+    }
 
 
 }
+
