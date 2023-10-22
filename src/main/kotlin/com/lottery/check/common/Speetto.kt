@@ -21,7 +21,7 @@ interface Speetto {
     }
 
     fun sumTotalRewardMoney():Long{
-        val rewardMoneyList= speettoReward.MONEYLIST
+        val rewardMoneyList= calculateLotteryTax( speettoReward.MONEYLIST)
         val rewardWinnersCountList= mutableListOf(first,second,third)
         val FIRST_TO_THIRD=3
         val etcRewardList=speettoReward.WINNERCOUNTLIST.subList(
@@ -37,14 +37,29 @@ interface Speetto {
         for (i in rewardMoneyList.indices) {
             totalReward+=rewardMoneyList[i].toLong()*rewardWinnersCountList[i]
         }
-        println("totalReward"+totalReward)
+
         return totalReward
+    }
+    fun calculateLotteryTax(lotteryList:List<Int>):List<Int>{
+        val taxLotteryList=lotteryList.map { lottery->
+            if (lottery>300000000){
+                (lottery*(1-0.33)).toInt()
+            }else if(lottery>2000000){
+                (lottery*(1-0.22)).toInt()
+            } else {
+                lottery
+            }
+        }
+        print(taxLotteryList)
+        return taxLotteryList
+
+
     }
 
     fun sumTotalCostMoney():Long{
         val cost:Long=speettoReward.COST.toLong()
         val remainingTickets:Long= (speettoReward.TOTAL_QUANTITY.toLong()*(1-calculateSalesRate())).toLong()
-        println("totalCost"+cost*remainingTickets)
+
         return cost*remainingTickets
     }
     fun calculateSalesRate(): Double {
