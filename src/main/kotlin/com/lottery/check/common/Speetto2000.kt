@@ -8,5 +8,7 @@ class Speetto2000(
     override val quantityLeft: Int
 ) : Speetto {
     override val speettoReward:SPEETTO_REWARD=SPEETTO_TWOTHOUSAND()
-
+    override fun getKind(): SpeettoKind {
+        return SpeettoKind.TwoThousand
+    }
 }

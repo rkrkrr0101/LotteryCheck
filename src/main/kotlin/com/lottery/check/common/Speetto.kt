@@ -19,6 +19,7 @@ interface Speetto {
         return roundToDecimal(totalRewardMoney.toDouble()/ totalCostMoney.toDouble())
 
     }
+    fun getKind():SpeettoKind
 
     fun sumTotalRewardMoney():Long{
         val rewardMoneyList= calculateLotteryTax( speettoReward.MONEYLIST)
@@ -50,7 +51,6 @@ interface Speetto {
                 lottery
             }
         }
-        print(taxLotteryList)
         return taxLotteryList
 
 

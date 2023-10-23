@@ -11,18 +11,27 @@ import org.springframework.stereotype.Service
 
 @Service
 class CheckService {
-    fun test(){
+    fun calculateEfficiency():List<SpeettoEfficiencyResponseDto>{
         val selects: Elements = getJsoupElements(
             SPEETTO_CRAWLING.URL,
             SPEETTO_CRAWLING.QUERY)
+
         val speettoList=ArrayList<Speetto>()
         for (select in selects) {
             speettoList.add(htmlToSpeetto(select))
         }
+
+        val resDtoList=ArrayList<SpeettoEfficiencyResponseDto>()
         for (speetto in speettoList) {
-            println("""${speetto.episode} ${speetto.calculateRewardEfficiency()} ${speetto.calculateSalesRate()}""")
+            resDtoList.add(SpeettoEfficiencyResponseDto(
+                speetto.getKind(),
+                speetto.episode,
+                speetto.calculateSalesRate(),
+                speetto.calculateRewardEfficiency()
+            ))
         }
-        println(speettoList)
+
+        return resDtoList
 
 
 
@@ -49,14 +58,14 @@ class CheckService {
 
     }
 
-    fun getJsoupElements( url: String, query: String): Elements {
+    private fun getJsoupElements( url: String, query: String): Elements {
         val conn = createJSoupConnection(url)
         return conn.get().select(query)
 
     }
 
 
-    fun createJSoupConnection(url:String):Connection{
+    private fun createJSoupConnection(url:String):Connection{
         return Jsoup.connect(url)
     }
 

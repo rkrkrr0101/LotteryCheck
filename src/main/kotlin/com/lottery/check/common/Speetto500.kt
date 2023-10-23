@@ -10,6 +10,7 @@ class Speetto500(
     override val speettoReward:SPEETTO_REWARD=SPEETTO_FIVEHUNDRED()
 
 
-
-
+    override fun getKind(): SpeettoKind {
+        return SpeettoKind.FiveHundred
+    }
 }
