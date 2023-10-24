@@ -41,7 +41,7 @@ interface Speetto {
 
         return totalReward
     }
-    fun calculateLotteryTax(lotteryList:List<Int>):List<Int>{
+    private fun calculateLotteryTax(lotteryList:List<Int>):List<Int>{
         val taxLotteryList=lotteryList.map { lottery->
             if (lottery>300000000){
                 (lottery*(1-0.33)).toInt()
