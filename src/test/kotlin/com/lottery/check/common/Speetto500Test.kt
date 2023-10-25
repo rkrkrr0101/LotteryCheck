@@ -1,7 +1,7 @@
 package com.lottery.check.common
 
-import com.lottery.check.speetto.Speetto
-import com.lottery.check.speetto.Speetto500
+import com.lottery.check.speetto.domain.Speetto
+import com.lottery.check.speetto.domain.Speetto500
 import com.lottery.check.speetto.SpeettoKind
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

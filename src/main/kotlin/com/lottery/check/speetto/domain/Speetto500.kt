@@ -1,5 +1,6 @@
-package com.lottery.check.speetto
+package com.lottery.check.speetto.domain
 
+import com.lottery.check.speetto.SpeettoKind
 import com.lottery.check.speetto.speetto_const.SPEETTO_FIVEHUNDRED
 import com.lottery.check.speetto.speetto_const.SPEETTO_REWARD
 

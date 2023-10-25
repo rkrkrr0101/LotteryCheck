@@ -2,6 +2,10 @@ package com.lottery.check.service
 
 import com.lottery.check.speetto.*
 import com.lottery.check.speetto.SpeettoKind.*
+import com.lottery.check.speetto.domain.Speetto
+import com.lottery.check.speetto.domain.Speetto1000
+import com.lottery.check.speetto.domain.Speetto2000
+import com.lottery.check.speetto.domain.Speetto500
 import com.lottery.check.speetto.dto.SpeettoEfficiencyResponseDto
 import com.lottery.check.speetto.speetto_const.SPEETTO_CRAWLING
 import org.jsoup.Connection
