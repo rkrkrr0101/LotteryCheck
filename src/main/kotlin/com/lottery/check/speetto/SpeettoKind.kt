@@ -1,4 +1,4 @@
-package com.lottery.check.common
+package com.lottery.check.speetto
 
 import java.lang.IllegalArgumentException
 

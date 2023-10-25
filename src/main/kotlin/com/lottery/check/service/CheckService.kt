@@ -1,7 +1,9 @@
 package com.lottery.check.service
 
-import com.lottery.check.common.*
-import com.lottery.check.common.SpeettoKind.*
+import com.lottery.check.speetto.*
+import com.lottery.check.speetto.SpeettoKind.*
+import com.lottery.check.speetto.dto.SpeettoEfficiencyResponseDto
+import com.lottery.check.speetto.speetto_const.SPEETTO_CRAWLING
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
@@ -47,7 +49,7 @@ class CheckService {
         return speettoList
     }
 
-    private fun htmlToSpeetto(select: Element):Speetto {
+    private fun htmlToSpeetto(select: Element): Speetto {
         val kind = select.getElementsByClass("tit")[0]
             .text().split(" ")[1]
         val episode = select.getElementsByClass("tit")[0]

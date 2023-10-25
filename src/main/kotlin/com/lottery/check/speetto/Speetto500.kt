@@ -1,4 +1,7 @@
-package com.lottery.check.common
+package com.lottery.check.speetto
+
+import com.lottery.check.speetto.speetto_const.SPEETTO_FIVEHUNDRED
+import com.lottery.check.speetto.speetto_const.SPEETTO_REWARD
 
 class Speetto500(
     override val episode: Int,
@@ -7,7 +10,7 @@ class Speetto500(
     override val third: Int,
     override val quantityLeft: Int
 ) : Speetto {
-    override val speettoReward:SPEETTO_REWARD=SPEETTO_FIVEHUNDRED()
+    override val speettoReward: SPEETTO_REWARD = SPEETTO_FIVEHUNDRED()
 
 
     override fun getKind(): SpeettoKind {

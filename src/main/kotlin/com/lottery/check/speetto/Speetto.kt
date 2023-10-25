@@ -1,5 +1,6 @@
-package com.lottery.check.common
+package com.lottery.check.speetto
 
+import com.lottery.check.speetto.speetto_const.SPEETTO_REWARD
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -11,7 +12,7 @@ interface Speetto {
     val second:Int
     val third:Int
     val quantityLeft:Int
-    val speettoReward:SPEETTO_REWARD
+    val speettoReward: SPEETTO_REWARD
 
     fun calculateRewardEfficiency():Double{
         val totalRewardMoney=sumTotalRewardMoney()
@@ -19,7 +20,7 @@ interface Speetto {
         return roundToDecimal(totalRewardMoney.toDouble()/ totalCostMoney.toDouble())
 
     }
-    fun getKind():SpeettoKind
+    fun getKind(): SpeettoKind
 
     fun sumTotalRewardMoney():Long{
         val rewardMoneyList= calculateLotteryTax( speettoReward.MONEYLIST)

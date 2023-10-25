@@ -1,4 +1,4 @@
-package com.lottery.check.common
+package com.lottery.check.speetto.speetto_const
 
 class SPEETTO_CRAWLING{
     companion object {
