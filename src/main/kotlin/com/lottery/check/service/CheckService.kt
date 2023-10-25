@@ -11,30 +11,40 @@ import org.springframework.stereotype.Service
 
 @Service
 class CheckService {
-    fun calculateEfficiency():List<SpeettoEfficiencyResponseDto>{
+    fun calculateEfficiency(): List<SpeettoEfficiencyResponseDto> {
         val selects: Elements = getJsoupElements(
             SPEETTO_CRAWLING.URL,
-            SPEETTO_CRAWLING.QUERY)
+            SPEETTO_CRAWLING.QUERY
+        )
 
-        val speettoList=ArrayList<Speetto>()
+        val speettoList = ElementToSpeettoList(selects)
+
+        return speettoToResponseDto(speettoList)
+
+
+    }
+
+    private fun speettoToResponseDto(speettoList: ArrayList<Speetto>): ArrayList<SpeettoEfficiencyResponseDto> {
+        val resDtoList = ArrayList<SpeettoEfficiencyResponseDto>()
+        for (speetto in speettoList) {
+            resDtoList.add(
+                SpeettoEfficiencyResponseDto(
+                    speetto.getKind(),
+                    speetto.episode,
+                    speetto.calculateSalesRate(),
+                    speetto.calculateRewardEfficiency()
+                )
+            )
+        }
+        return resDtoList
+    }
+
+    private fun ElementToSpeettoList(selects: Elements): ArrayList<Speetto> {
+        val speettoList = ArrayList<Speetto>()
         for (select in selects) {
             speettoList.add(htmlToSpeetto(select))
         }
-
-        val resDtoList=ArrayList<SpeettoEfficiencyResponseDto>()
-        for (speetto in speettoList) {
-            resDtoList.add(SpeettoEfficiencyResponseDto(
-                speetto.getKind(),
-                speetto.episode,
-                speetto.calculateSalesRate(),
-                speetto.calculateRewardEfficiency()
-            ))
-        }
-
-        return resDtoList
-
-
-
+        return speettoList
     }
 
     private fun htmlToSpeetto(select: Element):Speetto {
