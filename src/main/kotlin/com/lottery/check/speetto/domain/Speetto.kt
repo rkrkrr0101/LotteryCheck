@@ -21,7 +21,7 @@ interface Speetto {
         return roundToDecimal(totalRewardMoney.toDouble()/ totalCostMoney.toDouble())
 
     }
-    fun getKind(): SpeettoKind
+
 
     fun sumTotalRewardMoney():Long{
         val rewardMoneyList= calculateLotteryTax( speettoReward.MONEYLIST)
@@ -71,6 +71,8 @@ interface Speetto {
 
         return roundToDecimal(currentThirdSoldQuantity / totalThirdQuantity)
     }
+
+
     private fun roundToDecimal(num:Double,decimalPlaces:Int=3):Double{
         var decimalPlaceString=""
         for(i in 1..decimalPlaces){
@@ -80,6 +82,8 @@ interface Speetto {
         df.roundingMode=RoundingMode.FLOOR
         return df.format(num).toDouble()
     }
+
+    fun getKind(): SpeettoKind
 
 
 }
