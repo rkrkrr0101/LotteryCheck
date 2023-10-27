@@ -1,11 +1,10 @@
-package com.lottery.check.service
+package com.lottery.check.common
 
 import com.lottery.check.speetto.SpeettoKind
 import com.lottery.check.speetto.domain.Speetto
 import com.lottery.check.speetto.domain.Speetto1000
 import com.lottery.check.speetto.domain.Speetto2000
 import com.lottery.check.speetto.domain.Speetto500
-import com.lottery.check.speetto.dto.SpeettoEfficiencyResponseDto
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
@@ -13,7 +12,14 @@ import org.jsoup.select.Elements
 import org.springframework.stereotype.Component
 
 @Component
-class CrawlService {
+class CrawlManager {
+    fun elementToSpeettoList(selects: Elements): ArrayList<Speetto> {
+        val speettoList = ArrayList<Speetto>()
+        for (select in selects) {
+            speettoList.add(htmlToSpeetto(select))
+        }
+        return speettoList
+    }
     fun htmlToSpeetto(select: Element): Speetto {
         val kind = select.getElementsByClass("tit")[0]
             .text().split(" ")[1]
@@ -45,26 +51,8 @@ class CrawlService {
     fun createJSoupConnection(url:String): Connection {
         return Jsoup.connect(url)
     }
-    fun speettoToResponseDto(speettoList: ArrayList<Speetto>): ArrayList<SpeettoEfficiencyResponseDto> {
-        val resDtoList = ArrayList<SpeettoEfficiencyResponseDto>()
-        for (speetto in speettoList) {
-            resDtoList.add(
-                SpeettoEfficiencyResponseDto(
-                    speetto.getKind(),
-                    speetto.episode,
-                    speetto.calculateSalesRate(),
-                    speetto.calculateRewardEfficiency()
-                )
-            )
-        }
-        return resDtoList
-    }
 
-    fun ElementToSpeettoList(selects: Elements): ArrayList<Speetto> {
-        val speettoList = ArrayList<Speetto>()
-        for (select in selects) {
-            speettoList.add(htmlToSpeetto(select))
-        }
-        return speettoList
-    }
+
+
+
 }
