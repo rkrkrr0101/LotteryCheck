@@ -1,4 +1,4 @@
-package com.lottery.check.common
+package com.lottery.check.crawlManager
 
 import com.lottery.check.speetto.SpeettoKind
 import com.lottery.check.speetto.domain.Speetto
@@ -12,15 +12,15 @@ import org.jsoup.select.Elements
 import org.springframework.stereotype.Component
 
 @Component
-class CrawlManager {
-    fun elementToSpeettoList(selects: Elements): ArrayList<Speetto> {
+class CrawlManagerImpl:CrawlManager {
+    override fun elementToSpeettoList(selects: Elements): ArrayList<Speetto> {
         val speettoList = ArrayList<Speetto>()
         for (select in selects) {
             speettoList.add(htmlToSpeetto(select))
         }
         return speettoList
     }
-    fun htmlToSpeetto(select: Element): Speetto {
+    override fun htmlToSpeetto(select: Element): Speetto {
         val kind = select.getElementsByClass("tit")[0]
             .text().split(" ")[1]
         val episode = select.getElementsByClass("tit")[0]
@@ -41,16 +41,7 @@ class CrawlManager {
 
     }
 
-    fun getJsoupElements( url: String, query: String): Elements {
-        val conn = createJSoupConnection(url)
-        return conn.get().select(query)
 
-    }
-
-
-    fun createJSoupConnection(url:String): Connection {
-        return Jsoup.connect(url)
-    }
 
 
 

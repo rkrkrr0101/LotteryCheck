@@ -19,7 +19,8 @@ data class SpeettoEfficiencyResponseDto(val kind: SpeettoKind,
             }
             return resDtoList
         }
-        fun speettoToResponseDto(speetto:Speetto
+        fun speettoToResponseDto(
+            speetto:Speetto
         ): SpeettoEfficiencyResponseDto {
             return SpeettoEfficiencyResponseDto(
                 speetto.getKind(),
