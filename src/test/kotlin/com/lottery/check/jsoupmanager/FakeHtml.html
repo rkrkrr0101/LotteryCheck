@@ -1,0 +1,3200 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta
+            content="동행복권, 로또6/45, 로또6/45판매점, 연금복권720+, 즉석복권, 즉석복권 판매점 조회, 연금복권 판매점 조회, 전자복권, 이벤트고객센터, 복권기금, 복권판매점 모집 문의 안내, 복권 통합포털, 추첨, 당첨정보, 회차별 번호 제공 ">
+    <meta id="desc" name="description" charset="EUC-KR" content="">
+    <title>동행복권</title>
+
+
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" href="/images/common/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/images/common/favicon.ico" type="image/x-icon">
+    <script type="text/javascript" src="/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="/js/common.js" charset="utf-8"></script>
+    <script type="text/javascript">
+        fn_g_init_message("");
+
+        var gameUserId = "";
+
+        function goGame(){
+            var userId = "";
+
+            if(userId == '' || userId == null){
+                alert("로그인 후 사용 해주시기 바랍니다.");
+                location.href = "/user.do?method=login";
+                return;
+            }
+
+            $.ajax({
+                type:"get",                             // 메소드타입
+                url:"https://el.dhlottery.co.kr/portal_login.jsp",    // url
+                dataType:"jsonp",                       // 이부분이 중요 데이타타입을 jsonP로 해줘야 크로스도메인을 이용할수 있다.
+                jsonp : 'callback',                     // 콜백함수 이름 명이다.
+                timeout:3000,
+                error: function() {                     // 에러날경우 콜백함수
+                    alert('접속이 원활하지 않습니다.');
+                },
+                success: function(data){        		// 성공했을때 콜백함수
+
+                    if(userId == data.userId && data.userId != ""){
+                        doGamePopUp("");
+                    }else{
+                        alert("로그인 세션이 해제 되었습니다.\n다시 한번 로그인해 주시기 바랍니다.");
+                        document.location.href = "/user.do?method=logout";
+                    }
+                }});
+        }
+
+        function goGame(lottoId,agreeType){
+            var userId = "";
+            if(userId == '' || userId == null){
+                alert("로그인 후 사용 해주시기 바랍니다.");
+                location.href = "/user.do?method=login&returnUrl=" + encodeURIComponent('/gameInfo.do?method=lottoMainView&lottoId=' + lottoId);
+                return;
+            }
+
+            $.ajax({
+                type:"get",                             // 메소드타입
+                url:"https://el.dhlottery.co.kr/portal_login.jsp",    // url
+                dataType:"jsonp",                       // 이부분이 중요 데이타타입을 jsonP로 해줘야 크로스도메인을 이용할수 있다.
+                jsonp : 'callback',                     // 콜백함수 이름 명이다.
+                timeout:3000,
+                error: function() {                     // 에러날경우 콜백함수
+                    alert("시스템이 원활하지 않습니다.\n이용에 불편을 드려 죄송합니다.");
+                },
+                success: function(data){        		// 성공했을때 콜백함수
+
+                    if(userId == data.userId && data.userId != ""){
+                        doGamePopUp(lottoId,agreeType);
+                    }else{
+                        alert("로그인 세션이 해제 되었습니다.\n다시 한번 로그인해 주시기 바랍니다.");
+                        document.location.href = "/user.do?method=logout";
+                    }
+                }});
+        }
+
+        function goGamePnInfo(lottoId,agreeType,svcInfoPnPcMsgYn){
+            var svcInfoPnPcMsgYn = svcInfoPnPcMsgYn;
+
+            if (svcInfoPnPcMsgYn == "Y") {
+                svcInfoPnMsg();
+                return;
+            }
+
+            var userId = "";
+            if(userId == '' || userId == null){
+                alert("로그인 후 사용 해주시기 바랍니다.");
+                location.href = "/user.do?method=login&returnUrl=" + encodeURIComponent('/gameInfo.do?method=lottoMainView&lottoId=' + lottoId);
+                return;
+            }
+
+            $.ajax({
+                type:"get",                             // 메소드타입
+                url:"https://el.dhlottery.co.kr/portal_login.jsp",  	// url
+                dataType:"jsonp",                       // 이부분이 중요 데이타타입을 jsonP로 해줘야 크로스도메인을 이용할수 있다.
+                jsonp : 'callback',                     // 콜백함수 이름 명이다.
+                timeout:3000,
+                error: function() {                     // 에러날경우 콜백함수
+                    alert("시스템이 원활하지 않습니다.\n이용에 불편을 드려 죄송합니다.");
+                },
+                success: function(data){        		// 성공했을때 콜백함수
+
+                    if(userId == data.userId && data.userId != ""){
+                        doGamePopUp(lottoId,agreeType);
+                    }else{
+                        alert("로그인 세션이 해제 되었습니다.\n다시 한번 로그인해 주시기 바랍니다.");
+                        document.location.href = "/user.do?method=logout";
+                    }
+                }});
+        }
+
+        function goGameElInfo(lottoId,agreeType,svcInfoElPcMsgYn){
+            var lottoId = lottoId;
+            var svcInfoElPcMsgYn = svcInfoElPcMsgYn;
+
+            /*
+            if (svcInfoElPcMsgYn == "Y") {
+                svcInfoElMsg();
+                return;
+            }
+            */
+
+            /*
+            if (svcInfoElPcMsgYn == "Y") {
+                svcInfoElTrMsg();
+                return;
+            }
+            */
+
+            if (svcInfoElPcMsgYn == "Y") {
+                if (lottoId == "LI21") {
+                    svcInfoElTrMsg();
+                    return;
+                } else {
+                    svcInfoElMsg();
+                    return;
+                }
+            }
+
+            var userId = "";
+            if(userId == '' || userId == null){
+                alert("로그인 후 사용 해주시기 바랍니다.");
+                location.href = "/user.do?method=login&returnUrl=" + encodeURIComponent('/gameInfo.do?method=lottoMainView&lottoId=' + lottoId);
+                return;
+            }
+
+            $.ajax({
+                type:"get",                             // 메소드타입
+                url:"https://el.dhlottery.co.kr/portal_login.jsp",  	// url
+                dataType:"jsonp",                       // 이부분이 중요 데이타타입을 jsonP로 해줘야 크로스도메인을 이용할수 있다.
+                jsonp : 'callback',                     // 콜백함수 이름 명이다.
+                timeout:3000,
+                error: function() {                     // 에러날경우 콜백함수
+                    alert("시스템이 원활하지 않습니다.\n이용에 불편을 드려 죄송합니다.");
+                },
+                success: function(data){        		// 성공했을때 콜백함수
+
+                    if(userId == data.userId && data.userId != ""){
+                        doGamePopUp(lottoId,agreeType);
+                    }else{
+                        alert("로그인 세션이 해제 되었습니다.\n다시 한번 로그인해 주시기 바랍니다.");
+                        document.location.href = "/user.do?method=logout";
+                    }
+                }});
+        }
+
+        function goGameEnInfo(lottoId,agreeType,endInfoElPcMsgYn){
+            var endInfoElPcMsgYn = endInfoElPcMsgYn;
+
+            if (endInfoElPcMsgYn == "Y") {
+                endInfoElMsg();
+                return;
+            }
+
+            var userId = "";
+            if(userId == '' || userId == null){
+                alert("로그인 후 사용 해주시기 바랍니다.");
+                location.href = "/user.do?method=login&returnUrl=" + encodeURIComponent('/gameInfo.do?method=lottoMainView&lottoId=' + lottoId);
+                return;
+            }
+
+            $.ajax({
+                type:"get",                             // 메소드타입
+                url:"https://el.dhlottery.co.kr/portal_login.jsp",  	// url
+                dataType:"jsonp",                       // 이부분이 중요 데이타타입을 jsonP로 해줘야 크로스도메인을 이용할수 있다.
+                jsonp : 'callback',                     // 콜백함수 이름 명이다.
+                timeout:3000,
+                error: function() {                     // 에러날경우 콜백함수
+                    alert("시스템이 원활하지 않습니다.\n이용에 불편을 드려 죄송합니다.");
+                },
+                success: function(data){        		// 성공했을때 콜백함수
+
+                    if(userId == data.userId && data.userId != ""){
+                        doGamePopUp(lottoId,agreeType);
+                    }else{
+                        alert("로그인 세션이 해제 되었습니다.\n다시 한번 로그인해 주시기 바랍니다.");
+                        document.location.href = "/user.do?method=logout";
+                    }
+                }});
+        }
+
+        function goGameElEnInfo(lottoId,agreeType,svcInfoElPcMsgYn,endInfoElPcMsgYn){
+            var svcInfoElPcMsgYn = svcInfoElPcMsgYn;
+            var endInfoElPcMsgYn = endInfoElPcMsgYn;
+
+            if (svcInfoElPcMsgYn == "Y") {
+                svcInfoElMsg();
+                return;
+            }
+
+            if (endInfoElPcMsgYn == "Y") {
+                endInfoElMsg();
+                return;
+            }
+
+            var userId = "";
+            if(userId == '' || userId == null){
+                alert("로그인 후 사용 해주시기 바랍니다.");
+                location.href = "/user.do?method=login&returnUrl=" + encodeURIComponent('/gameInfo.do?method=lottoMainView&lottoId=' + lottoId);
+                return;
+            }
+
+            $.ajax({
+                type:"get",                             // 메소드타입
+                url:"https://el.dhlottery.co.kr/portal_login.jsp",  	// url
+                dataType:"jsonp",                       // 이부분이 중요 데이타타입을 jsonP로 해줘야 크로스도메인을 이용할수 있다.
+                jsonp : 'callback',                     // 콜백함수 이름 명이다.
+                timeout:3000,
+                error: function() {                     // 에러날경우 콜백함수
+                    alert("시스템이 원활하지 않습니다.\n이용에 불편을 드려 죄송합니다.");
+                },
+                success: function(data){        		// 성공했을때 콜백함수
+
+                    if(userId == data.userId && data.userId != ""){
+                        doGamePopUp(lottoId,agreeType);
+                    }else{
+                        alert("로그인 세션이 해제 되었습니다.\n다시 한번 로그인해 주시기 바랍니다.");
+                        document.location.href = "/user.do?method=logout";
+                    }
+                }});
+        }
+
+        function doGamePopUp(lotid,agreeType){
+            /*
+            * 스피드키노 LD10, 메가빙고 LD11, 더블잭마이더스 LD20, 파워볼 LD14, 트레져헌터 LI22, 트리플럭 LI21 -> gamePop
+            * 캐치미 LI23 -> catchPop
+            */
+            var type;
+
+            if( lotid === 'LI23' ){
+                type = 'catchPop';
+            }else{
+                type = 'gamePop';
+            }
+
+            if($("#agreeChk").is(":checked") || agreeType == 2){
+                var new_popup = centerPop('https://el.dhlottery.co.kr/game/TotalGame.jsp?LottoId='+ lotid, 'type', 1164, 645, 'no');
+            }else{
+                alert('약관에 동의해 주셔야 이용이 가능합니다.');
+                $("#agreeChk").focus();
+            }
+
+        }
+
+        //설문조사 팝업
+        function popCenter(url){
+            var new_popup =	centerPop(url, '설문조사', 480, 800, 'yes');
+        }
+
+        //샘플게임 팝업
+        function sample_pop(code, userId){
+
+            //location.href = "/gamezone.do?method=gameZoneMainView";
+            //return;
+            if(userId == null || userId == ""){
+                alert("로그인 후 이용이 가능합니다.");
+                //location.href = "/user.do?method=login";
+                //location.href = "/user.do?method=login&returnUrl=/gamezone.do?method=gameZoneMainView";
+                location.href = "/user.do?method=login&returnUrl=" + encodeURIComponent('/gameInfo.do?method=lottoMainView&lottoId=' + code);
+                return;
+            }
+            if(!$("#sampleAgreeChk").is(":checked")){
+                alert('약관에 동의해 주셔야 이용이 가능합니다.');
+                $("#sampleAgreeChk").focus();
+                return;
+            }
+
+            $.ajax({
+                type:"POST",                            // 메소드타입
+                url:"/gamezone.do?method=autoAgreeProc",// url
+                dataType:"json",                        // 이부분이 중요 데이타타입을 jsonP로 해줘야 크로스도메인을 이용할수 있다.
+                timeout:3000,
+                async:false,
+                contentType : "application/json; charset=EUC-KR",
+                error: function() {                     // 에러날경우 콜백함수
+                    console.log("error");
+                },
+                success: function(data){        		// 성공했을때 콜백함수
+                    if(data.successYn){
+                        console.log(data);
+                    }
+                }
+            });
+
+            $.ajax({
+                type:"get",                             // 메소드타입
+                url:"https://el.dhlottery.co.kr/portal_login.jsp",    // url
+                //data:{"jackpot":strJackpotData},   	// 파라메터 타입
+                dataType:"jsonp",                       // 이부분이 중요 데이타타입을 jsonP로 해줘야 크로스도메인을 이용할수 있다.
+                timeout:3000,
+                jsonp : 'callback',                     // 콜백함수 이름 명이다.
+                error: function() {                     // 에러날경우 콜백함수
+                    alert("시스템이 원활하지 않습니다.\n이용에 불편을 드려 죄송합니다.");
+                },
+                success: function(data){        		// 성공했을때 콜백함수
+                    if(userId == data.userId && data.userId != ""){
+                        var new_popup =	centerPop('https://el.dhlottery.co.kr/game_sample/TotalGame.jsp?LottoId=' + code, 'gamePop', 1164, 645, 'no');
+                    }else{
+                        alert("로그인 세션이 해제 되었습니다.\n다시 한번 로그인해 주시기 바랍니다.");
+                        document.location.href = "/user.do?method=logout";
+                    }
+                }});
+        }
+
+        //샘플게임(랜덤) 팝업
+        function sample_random_pop(userId){
+
+            //location.href = "/gamezone.do?method=gameZoneMainView";
+            //return;
+            if(userId == null || userId == ""){
+                alert("로그인 후 이용이 가능합니다.");
+                location.href = "/user.do?method=login";
+// 		location.href = "/user.do?method=login&returnUrl=/gamezone.do?method=gameZoneMainView";
+// 		location.href = "/common.do?method=main";
+                return;
+            }
+
+            var x = Math.floor((Math.random() * 7) + 1 );
+
+            if(x == 1){
+                var code = "LD14";
+            }else if(x == 2){
+                var code = "LD10";
+            }else if(x == 3){
+                var code = "LD20";
+            }else if(x == 4){
+                var code = "LI23";
+            }else if(x == 5){
+                var code = "LI22";
+            }else if(x == 6){
+                var code = "LI21";
+            }else if(x == 7){
+                var code = "LD11";
+            }
+
+            $.ajax({
+                type:"get",                             // 메소드타입
+                url:"/gamezone.do?method=autoAgreeProc",// url
+                dataType:"json",                        // 이부분이 중요 데이타타입을 jsonP로 해줘야 크로스도메인을 이용할수 있다.
+                timeout:3000,
+                async:false,
+                contentType : "application/json; charset=EUC-KR",
+                error: function() {                     // 에러날경우 콜백함수
+                    console.log("error");
+                },
+                success: function(data){        		// 성공했을때 콜백함수
+                    if(data.successYn){
+                        console.log(data);
+                    }
+                }
+            });
+
+            $.ajax({
+                type:"get",                             // 메소드타입
+                url:"https://el.dhlottery.co.kr/portal_login.jsp",    // url
+                //data:{"jackpot":strJackpotData},   	// 파라메터 타입
+                dataType:"jsonp",                       // 이부분이 중요 데이타타입을 jsonP로 해줘야 크로스도메인을 이용할수 있다.
+                timeout:3000,
+                jsonp : 'callback',                     // 콜백함수 이름 명이다.
+                error: function() {                     // 에러날경우 콜백함수
+                    alert("시스템이 원활하지 않습니다.\n이용에 불편을 드려 죄송합니다.");
+                },
+                success: function(data){        		// 성공했을때 콜백함수
+                    if(userId == data.userId && data.userId != ""){
+                        var new_popup =	centerPop('https://el.dhlottery.co.kr/game_sample/TotalGame.jsp?LottoId=' + code , 'gamePop', 1164, 645, 'no');
+                    }else{
+                        alert("로그인 세션이 해제 되었습니다.\n다시 한번 로그인해 주시기 바랍니다.");
+                        document.location.href = "/user.do?method=logout";
+                    }
+                }});
+        }
+
+
+
+        function doReserve(){
+            var userId = "";
+
+            if(userId == '' || userId == null){
+                alert("로그인 후 사용 해주시기 바랍니다.");
+                //location.href = "/user.do?method=login";
+                location.href = "/user.do?method=login&returnUrl=/gameInfo.do?method=game720Method";
+                return;
+            }
+
+            $.ajax({
+                type:"get",                             // 메소드타입
+                url:"https://el.dhlottery.co.kr/portal_login.jsp",    // url
+                dataType:"jsonp",                       // 이부분이 중요 데이타타입을 jsonP로 해줘야 크로스도메인을 이용할수 있다.
+                timeout:3000,
+                jsonp : 'callback',                     // 콜백함수 이름 명이다.
+                error: function() {                     // 에러날경우 콜백함수
+                    alert("시스템이 원활하지 않습니다.\n이용에 불편을 드려 죄송합니다.");
+                },
+                success: function(data){        		// 성공했을때 콜백함수
+                    if(userId == data.userId && data.userId != ""){
+                        window.open('https://el.dhlottery.co.kr/lotto720.do?method=reserveBuy', 'pensionPop' , 'width=930, height=672, left=0, top=0, status=no, toolbar=no, menubar=no, location=no');
+                    }else{
+                        alert("로그인 세션이 해제 되었습니다.\n다시 한번 로그인해 주시기 바랍니다.");
+                        document.location.href = "/user.do?method=logout";
+                    }
+                }});
+
+        }
+
+
+        function jackpotViewPop(){
+            var url = "/gameInfo.do?method=jackpotView&lottoId=";
+            commonPop("", url, 820, 700, 'yes');
+        }
+
+        function goLottoBuy(agreeType){
+            var userId = "";
+
+            if(userId == '' || userId == null){
+                alert("로그인 후 사용 해주시기 바랍니다.");
+                //location.href = "/user.do?method=login";
+                location.href = "/user.do?method=login&returnUrl=/gameInfo.do?method=buyLotto";
+                return;
+            }
+            if(agreeType == 1 && !$("#agreeChk").is(":checked")){
+                alert('약관에 동의해 주셔야 이용이 가능합니다.');
+                $("#agreeChk").focus();
+                return;
+            }
+
+
+            $.ajax({
+                type:"get",                             // 메소드타입
+                url:"https://el.dhlottery.co.kr/portal_login.jsp",    // url
+                dataType:"jsonp",                       // 이부분이 중요 데이타타입을 jsonP로 해줘야 크로스도메인을 이용할수 있다.
+                timeout:3000,
+                jsonp : 'callback',                     // 콜백함수 이름 명이다.
+                error: function() {                     // 에러날경우 콜백함수
+                    alert("시스템이 원활하지 않습니다.\n이용에 불편을 드려 죄송합니다.");
+                },
+                success: function(data){        		// 성공했을때 콜백함수
+                    if(userId == data.userId && data.userId != ""){
+                        var new_popup = centerPop('https://el.dhlottery.co.kr/game/TotalGame.jsp?LottoId=LO40', 'gamePop', 1164, 645, 'no');
+                    }else{
+                        alert("로그인 세션이 해제 되었습니다.\n다시 한번 로그인해 주시기 바랍니다.");
+                        document.location.href = "/user.do?method=logout";
+                    }
+                }});
+
+        }
+
+        function loginType(pageCode){
+            var userId = "";
+            var pageCodes = pageCode.split("-");
+        }
+
+        //엔터만 치면 로그인
+        function enter_check_top(eventValue) {
+            if (eventValue == 13) {
+                check_if_Valid_top();
+                return;
+            }
+        }
+
+        function depositAlert(){
+            alert("12월 2일 이후부터 사용 가능합니다.");
+        }
+
+        function check_if_Valid_top() {
+            var f = document.frmLogin;
+
+            if (f.userId.value == "") {
+                alert("아이디를 입력해 주십시오");
+                f.userId.focus();
+                return;
+            }
+            if (f.password.value == "") {
+                alert("비밀번호를 입력해 주세요");
+                f.password.focus();
+                return;
+            }
+            if (f.userId.value.length >= 15) {
+                alert("아이디가 자릿수가 초과되었습니다.");
+                return;
+            }
+            if (f.password.value.length >= 101) {
+                alert("비밀번호가 자릿수가 초과되었습니다.");
+                return;
+            }
+            loginpage_top();
+        }
+
+        function loginpage_top(){
+
+            var f = window.document.frmLogin;
+            var pageUrl = document.location.href;
+            var returnUrl="";
+
+            f.method = "post";
+            //f.target = "jform";
+            if(returnUrl != ''){
+                f.action = "https://www.dhlottery.co.kr/userSsl.do?method=login&returnUrl="+encodeURIComponent(returnUrl);
+            }else{
+                f.action = "https://www.dhlottery.co.kr/userSsl.do?method=login&returnUrl="+encodeURIComponent(pageUrl);
+            }
+            f.submit();
+
+        }
+
+        function getCookie(uName) {
+            var flag = document.cookie.indexOf(uName + '=');
+            if (flag != -1) {
+                flag += uName.length + 1;
+                end = document.cookie.indexOf(';', flag);
+                if (end == -1)
+                    end = document.cookie.length;
+                return unescape(document.cookie.substring(flag, end));
+            }
+        }
+
+        function gomain() {
+            location.href="/common.do?method=main";
+        }
+
+        $(document).ready(function() {
+            $("#phoneTopMenu").html("");
+
+            if(getCookie("userId") != undefined)
+            {
+                $('.top_userid').val(getCookie("userId"));
+            }
+
+        });
+
+        function svcInfoPnMsg() {
+            alert("일시 판매 정지 중입니다.\n\n판매 개시일 : 2023년 1월 4일 10시");
+        }
+
+        function svcInfoElMsg() {
+            alert("일시 판매 정지 중입니다.\n\n판매 개시일 : 2023년 1월 4일 10시");
+        }
+
+
+        function svcInfoElTrMsg() {
+            alert("트리플럭 복권은 판매 정지 중입니다.\n\n정지일시 : 2023년 10월 26일 23시 경");
+        }
+
+        function endInfoElMsg() {
+            alert("판매시간이 아닙니다.\n\n판매 시간 : 06시 ~ 24시");
+        }
+
+    </script>
+    <!-- <link rel="stylesheet" type="text/css" href="/css/nanum_gothic_dev.css" /> -->
+    <link rel="stylesheet" type="text/css" href="/css/main.css?version=v1.0">
+    <script type="text/javascript" src="/js/function.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/InsertFlash.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/makePCookie.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/js/webfont.js"></script>
+    <script>
+        if (navigator.platform && /win16|win32|win64|mac/ig.test(navigator.platform) == false) {
+            if ('https://m.dhlottery.co.kr'.indexOf(location.hostname) == -1 || 'https://m.dhlottery.co.kr'.indexOf(location.hostname) == -1 ) {
+                location.href = 'https://m.dhlottery.co.kr';
+            }
+        }
+    </script>
+    <link rel="stylesheet" type="text/css" href="/css/al720.css">
+    <script type='text/javascript' src="/js/slick.min.js"></script>
+    <script type='text/javascript' src="/js/jquery.vticker-min.js"></script>
+    <script type="text/javascript">
+        var pageCode = "00-00-00";
+        var pageName = "메인페이지";
+
+        $(document).ready(function(){
+            $(function(){
+                $('#tip_list').vTicker({
+                    speed: 500,
+                    pause: 3000,
+                    animation: 'fade',
+                    mousePause: false,
+                    showItems: 3
+                });
+            });
+
+            openHighBuyer();
+
+            var tmpVal720 = 182;
+            var tmpValDraw720 = 2023-10-26;
+
+            if(tmpVal720 == "0" || tmpValDraw720 == "0") {
+                $("#win720").css("display", "none");
+                $("#win720_img").css("display", "");
+            } else {
+                $("#win720").css("display", "");
+                $("#win520").css("display", "none");
+                $("#win720_img").css("display", "none");
+                get720Number('start');
+            }
+            //팝업 공지 ..
+
+            var hdr = "400|420|0|0".split("|");
+            var intWidth	= hdr[0];
+            var intHeight	= hdr[1];
+            var intTop	    = hdr[2];
+            var intLeft	    = hdr[3];
+
+            var url = "/common.do?method=popupOne&txtNo="+"14569";
+            if (getCookiePop("pop14569") == null) {
+                var new_popup = positionPop(url, "14569", parseInt(intLeft), parseInt(intTop), parseInt(intWidth), parseInt(intHeight), 'yes');
+            }
+
+
+            //구입한도안내 팝업
+            getBuyLimitInfoPopup();
+
+            //os, ie version check
+            var ie_chk = ieCheck();
+            var ie_ver = ieVersion_check();
+            var os_ver = osVersion_check();
+            if(os_ver == true){
+                if((ie_chk == true) && (ie_ver < 8)){
+                    // ie_message();
+                }
+            }
+
+            setTimeout(getJackpot, 1000);
+        });
+
+        function ieCheck(){
+            var agent = navigator.userAgent.toLowerCase();
+            if((navigator.appName == "Netscape" && navigator.userAgent.search("Trident") != -1) || (agent.indexOf("msie"))){
+                ie = true;
+            }else{
+                ie = false;
+            }
+            return ie;
+        }
+
+        function ieVersion_check(){
+            var word = "";
+            var version = "N/A";
+            var agent = navigator.userAgent.toLowerCase();
+            var name = navigator.appName;
+            // IE old version ( IE 10 or Lower )
+            if ( name == "Microsoft Internet Explorer" ){
+                word = "msie ";
+            }else {
+                // IE 11
+                if ( agent.search("trident") > -1 ){
+                    word = "trident/.*rv:";
+                }
+                // Microsoft Edge
+                else if ( agent.search("edge/") > -1 ){
+                    word = "edge/";
+                }
+            }
+            var reg = new RegExp( word + "([0-9]{1,}[\.0-9]{0,})" );
+            if (  reg.exec( agent ) != null  ) {
+                version = RegExp.$1;
+            }
+            return version;
+        }
+
+        function osVersion_check(){
+            var os_ver = navigator.userAgent.toLowerCase();
+            if(os_ver.indexOf("windowsce") != -1){
+                return false;
+            }else if(os_ver.indexOf("windows95") != -1){
+                return true;
+            }else if(os_ver.indexOf("windows98") != -1){
+                if (os_ver.indexOf("win9x4.90") != -1){
+                    return true;
+                }else{
+                    return true;
+                }
+            }else if(os_ver.indexOf("windows nt 4.0") != -1){
+                return true;
+            }else if(os_ver.indexOf("windows nt 5.0") != -1){
+                return true;
+            }else if(os_ver.indexOf("windows nt 5.01") != -1){
+                return true;
+            }else if(os_ver.indexOf("windows nt 5.1") != -1){
+                return true;
+            }else if(os_ver.indexOf("windows nt 5.2") != -1){
+                return false;
+            }else if(os_ver.indexOf("windows nt 6.0") != -1){
+                return false;
+            }else if(os_ver.indexOf("windows nt 6.1") != -1){
+                return false;
+            }else if(os_ver.indexOf("windows nt 6.2") != -1){
+                return false;
+            }else if(os_ver.indexOf("windows nt 6.3") != -1){
+                return false;
+            }else if(os_ver.indexOf("windows nt 6.4") != -1){
+                return false;
+            }else if(os_ver.indexOf("windowsphone8.0") != -1){
+                return false;
+            }else if(os_ver.indexOf("windowsphoneos7.5") != -1){
+                return false;
+            }else if(os_ver.indexOf("xbox") != -1){
+                return false;
+            }else if(os_ver.indexOf("xboxone") != -1){
+                return false;
+            }else if(os_ver.indexOf("win16") != -1){
+                return false;
+            }else if(os_ver.indexOf("arm") != -1){
+                return false;
+            }else{
+                return true;
+            }
+        }
+
+        /**
+         *고액구매자 팝업
+         **/
+
+
+        function openHighBuyer() {
+
+            if (getCookiePop("pophighbuyer") == null) {
+                if("N" == "Y"){
+
+                    var strUrl = "/common.do?method=popup_highBuyer&buyamt=";
+                    var popwidth   = 350;
+                    var popheight  = 380;
+                    var winName    = "고액구매자 안내";
+                    var new_popup = centerPop(strUrl, winName, popwidth, popheight, 'no');
+                }
+            }
+        }
+
+
+
+        function alert_setCookie(name, value, expiredays){
+            var today = new Date();
+            today.setDate(today.getDate() + expiredays);
+            document.cookie = name + "=" + escape(value) + "; path=/; expires=" + today.toGMTString()+";";
+        }
+
+        function ie_message(){
+            getCookiePop("ie_message");
+            var ie_msg = "인터넷 보안 강화 정책 시행('16.1.1)에 따라,"
+                + "\n 인터넷 익스플로러 8.0 미만의 브라우저에서"
+                + "\n 로그인이 되지 않습니다."
+                + "\n - 최소사양 : Windows XP SP3+, IE8.0"
+                + "\n\n  공지사항을 확인하시겠습니까?";
+            if(getCookiePop("ie_message") == null){
+                alert_setCookie("ie_message","ie_message",7);
+                if(confirm(ie_msg)){
+                    location.href =	"/service.do?method=noticeView&noticeSerial=12867";
+                }
+            }
+        }
+
+        /**************************************
+         ******** 구입한도안내 팝업을 호출한다. ********
+         팝업 호출조건
+         1. 로그인 상태일 것
+         2. 하루동안 열지않기 쿠키값이 없을 것
+         3. 구입한도안내 대상일 것
+         **************************************/
+        function getBuyLimitInfoPopup() {
+            var startDate = new Date("2014-06-01T00:00:00");
+            var endDate = new Date("2014-06-30T23:59:59");
+            var todayDate = new Date();
+
+            if(todayDate.getTime() >= startDate.getTime() && todayDate.getTime() <= endDate.getTime()) {
+                if("" != "") {	//로그인여부 체크
+                    var objCookie = document.cookie;
+                    if(objCookie.indexOf("pop_buyLimitInfo") == -1) {	//하루동안 열지않기 쿠키 체크
+                        var openFlag = getCookiePop("pop_buyLimitOpen");
+                        //구입한도안내대상 쿠키값이 없을 경우만 조회 프로세스 설정
+                        if(openFlag == null) {
+                            $.ajax({
+                                type: 'POST',
+                                url: "/common.do?method=isBuyLimitInfoTarget",
+                                data : "userId=",
+                                dataType    :'json',
+                                async:false,
+                                success : function(data) { // 성공했을때 콜백함수
+                                    if(data.count > 0) {
+                                        openBuyLimitInfoPopup();
+                                    } else {
+                                        //구입한도안내대상이 아닌 경우 팝업을 열지 않도록 쿠키설정
+                                        var todayDate = new Date();
+                                        todayDate.setDate( todayDate.getDate() + 365 );	//1년동안 쿠키 설정
+                                        document.cookie = "pop_buyLimitOpen=1; path=/; expires=" + todayDate.toGMTString() + ";";
+                                    }
+                                },
+                                error : function(data) {
+                                    //alert("실패");
+                                }
+                            });
+                        } else if(openFlag == "2") {
+                            //기존 구입한도안내대상인 경우 데이터를 조회하지 않고 팝업을 호출한다.
+                            openBuyLimitInfoPopup();
+                        }
+                    }
+                }
+            }
+        }
+
+        function openBuyLimitInfoPopup() {
+            //DB조회를 다시 하지 않도록 사용자 쿠키를 설정한다.
+            var todayDate = new Date();
+            todayDate.setDate( todayDate.getDate() + 365 );	//1년동안 쿠키 설정
+            document.cookie = "pop_buyLimitOpen=2; path=/; expires=" + todayDate.toGMTString() + ";";
+            var strUrl = "/common.do?method=popup_buyLimitInfo";
+            var strOption = "width=387, height=260, top=10, left=480, scrollbars=no";
+            window.open(strUrl, 'popup_buyLimitInfo', strOption);
+        }
+
+
+        //쿠키가 존재하지 않으면 팝업창을 연다.
+        function getCookiePop(name) {
+            var prefix = name + "=";
+            var cookieStartIndex = document.cookie.indexOf(prefix);
+            if (cookieStartIndex == -1) return null;
+            var cookieEndIndex = document.cookie.indexOf(";", cookieStartIndex + prefix.length);
+            if (cookieEndIndex == -1) cookieEndIndex = document.cookie.length;
+            return unescape(document.cookie.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+        }
+
+
+        //로또 645 회차 정보
+        function getLottoNumber(btnType){
+            var drwNo = 0;
+            if(btnType == "before"){
+                drwNo =	Number($("#lottoDrwNo").text()) - 1;
+            }else{
+                drwNo =	Number($("#lottoDrwNo").text()) + 1;
+            }
+            if("1091" < drwNo){
+                alert("다음 회차가 없습니다.");
+                return;
+            }
+            $.ajax({
+                type: 'POST',
+                url: "/common.do?method=getLottoNumber",
+                data : "drwNo=" + drwNo,
+                dataType    :'json',
+                async:false,
+                success : function(data) { // 성공했을때 콜백함수
+
+                    if(data.returnValue == "fail"){
+                        alert("이전 회차가 없습니다.");
+                        return;
+                    }
+                    var html = "";
+                    $("#lottoDrwNo").text(data.drwNo);
+                    var numView = "";
+                    /*
+                    numView = "<img id='drwtNo1' src='/img/index/main_ball_"+data.drwtNo1+".gif' alt='"+data.drwtNo1+"' />";
+                    numView += " <img id='drwtNo2' src='/img/index/main_ball_"+data.drwtNo2+".gif' alt='"+data.drwtNo2+"' />";
+                    numView += " <img id='drwtNo3' src='/img/index/main_ball_"+data.drwtNo3+".gif' alt='"+data.drwtNo3+"' />";
+                    numView += " <img id='drwtNo4' src='/img/index/main_ball_"+data.drwtNo4+".gif' alt='"+data.drwtNo4+"' />";
+                    numView += " <img id='drwtNo5' src='/img/index/main_ball_"+data.drwtNo5+".gif' alt='"+data.drwtNo5+"' />";
+                    numView += " <img id='drwtNo6' src='/img/index/main_ball_"+data.drwtNo6+".gif' alt='"+data.drwtNo6+"' />";
+                    numView += " <img src='/img/index/img_plus.gif' alt='보너스번호' class='more' />";
+                    numView += " <img id='bnusNo' src='/img/index/main_ball_"+data.bnusNo+".gif' alt='"+data.bnusNo+"' />";
+                    */
+                    numView = "<span class='accessibility'>당첨번호</span>";
+                    numView += "<span id='drwtNo1' class='ball_645 ball" + Math.ceil(data.drwtNo1 / 10) + "'>" + data.drwtNo1 + "</span>";
+                    numView += "<span id='drwtNo2' class='ball_645 ball" + Math.ceil(data.drwtNo2 / 10) + "'>" + data.drwtNo2 + "</span>";
+                    numView += "<span id='drwtNo3' class='ball_645 ball" + Math.ceil(data.drwtNo3 / 10) + "'>" + data.drwtNo3 + "</span>";
+                    numView += "<span id='drwtNo4' class='ball_645 ball" + Math.ceil(data.drwtNo4 / 10) + "'>" + data.drwtNo4 + "</span>";
+                    numView += "<span id='drwtNo5' class='ball_645 ball" + Math.ceil(data.drwtNo5 / 10) + "'>" + data.drwtNo5 + "</span>";
+                    numView += "<span id='drwtNo6' class='ball_645 ball" + Math.ceil(data.drwtNo6 / 10) + "'>" + data.drwtNo6 + "</span>";
+                    numView += "<span class='bonus'>보너스번호</span>";
+                    numView += "<span id='bnusNo' class='ball_645 ball" + Math.ceil(data.bnusNo / 10) +"'>"+ data.bnusNo + "</span>";
+
+                    $("#numView").html(numView);
+                    var winnerHtml = "";
+                    var calcValue = 100000000;
+                    var firstAcc = (Math.round(parseInt(data.firstAccumamnt)/calcValue));
+                    var firstWinAmt = (Math.round(parseInt(data.firstWinamnt)/calcValue));
+                    var firstPrzwnerCo = data.firstPrzwnerCo;
+
+                    if(data.totSellamnt != '0'){
+                        /*
+                        winnerHtml = "<p class='winner_num'>1등<span id='lottoNo1Su'> "+data.firstPrzwnerCo+"게임</span><label style='color:#ff9408;'> 총 당첨금액 약 <span id='lottoNo1TotalAmt'>"+firstAcc+"</span>억원</label></p>";
+                        winnerHtml += "<p class='winner_money'>(1게임당 당첨금액 약 <span id='lottoNo1SuAmount'>"+firstWinAmt+"</span>억원)";
+                        */
+                        winnerHtml = "<dl class='result'>";
+                        winnerHtml += "<dt>1등 총 당첨금</dt>";
+                        winnerHtml += "<dd><strong>"+firstAcc+"억원</strong>("+firstPrzwnerCo+"명 /"+firstWinAmt+"억)</dd>";
+                        winnerHtml += "</dl>";
+                    }else{
+                        /*
+                        winnerHtml = "<p class='winner_num'></p>";
+                        winnerHtml += "<p align='center'><h6 align='center'><font color='#4a82ca'>발표 준비중입니다.</font></h6></p>";
+                        */
+                        winnerHtml = "<dl class='result'>";
+                        winnerHtml += "<dt>1등 총 당첨금</dt>";
+                        winnerHtml += "<dd>발표 준비중입니다.</dd>";
+                        winnerHtml += "</dl>";
+                    }
+                    $("#share645fb").html("로또 6/45 " + data.drwNo + "회 당첨결과 페이스북으로 공유하기");
+                    $("#share645tt").html("로또 6/45 " + data.drwNo + "회 당첨결과 트위터로 공유하기");
+                    $("#winnerId").html(winnerHtml);
+                    var drwNoDate = "["+data.drwNoDate.replace(".","-").replace(".","-")+"]";
+                    $("#drwNoDate").text(drwNoDate);
+
+                },
+                error : function(data) {
+                    //alert("실패");
+                }
+            });
+
+        }
+
+        function get520Number(btnType){
+            var drwNo = 0;
+            var number = "";
+            if(btnType == "before"){
+                drwNo =	Number($("#drwNo520").text()) - 1;
+            }else if(btnType == "start"){
+                drwNo = 461;
+            }else{
+                drwNo =	Number($("#drwNo520").text()) + 1;
+            }
+            if("461" < drwNo){
+                alert("다음 회차가 없습니다.");
+                return;
+            }
+            $.ajax({
+                type: 'POST',
+                url: "/common.do?method=get520Number",
+                data : "drwNo=" + drwNo,
+                dataType    :'json',
+                async:false,
+                success : function(data) { // 성공했을때 콜백함수
+                    var number520 = "";
+                    if(data.rows.length == 0){
+                        alert("이전 회차가 없습니다.");
+                        return;
+                    }
+                    $("#drwNo520").text(data.rows[0].round);
+                    if(data.rows[0].pensionDrawDate != null && data.rows[0].pensionDrawDate != "" ){
+                        $("#drawDate").text("["+data.rows[0].pensionDrawDate.substring(0,10)+"]");
+                    }else{
+                        $("#drawDate").text("[]");
+                    }
+                    for(var i=0; i<data.rows.length ; i++) {
+                        /*
+                        number520 += "<p class='win_num'>";
+                        number520 += "	<span class='group'>"+data.rows[i].rankClass+"조</span>";
+                        number520 += "	<span class='num'>"+data.rows[i].rankNo.substring(0,1)+"</span>";
+                        number520 += "	<span class='num'>"+data.rows[i].rankNo.substring(1,2)+"</span>";
+                        number520 += "	<span class='num'>"+data.rows[i].rankNo.substring(2,3)+"</span>";
+                        number520 += "	<span class='num'>"+data.rows[i].rankNo.substring(3,4)+"</span>";
+                        number520 += "	<span class='num'>"+data.rows[i].rankNo.substring(4,5)+"</span>";
+                        number520 += "	<span class='num'>"+data.rows[i].rankNo.substring(5,6)+"</span>";
+                        number520 += "</p>";
+                        */
+                        number520 += "<p class='num'><a href='/gameResult.do?method=win520&wiselog=C_A_2_1'>";
+                        number520 += "	<span class='accessibility'>1등 " + (i + 1) + "번째 번호</span>";
+                        number520 += "	<span class='s'>" + data.rows[i].rankClass + "조</span>";
+                        number520 += "	<span class='n'>" + data.rows[i].rankNo.substring(0,1) + "</span>";
+                        number520 += "	<span class='n'>" + data.rows[i].rankNo.substring(1,2) + "</span>";
+                        number520 += "	<span class='n'>" + data.rows[i].rankNo.substring(2,3) + "</span>";
+                        number520 += "	<span class='n'>" + data.rows[i].rankNo.substring(3,4) + "</span>";
+                        number520 += "	<span class='n'>" + data.rows[i].rankNo.substring(4,5) + "</span>";
+                        number520 += "	<span class='n'>" + data.rows[i].rankNo.substring(5,6) + "</span>";
+                        number520 += "</a></p>";
+                    }
+                    $("#number520").html(number520);
+                    if(btnType  == "start"){
+                        numberSns520="연금복권520 461회 당첨번호"+ data.rows[0].rankClass +"조" +data.rows[0].rankNo + ","+data.rows[1].rankClass +"조" +data.rows[1].rankNo+"1등 월500만원X20년, https://www.dhlottery.co.kr/gameResult.do?method=win520";
+                    }
+                },
+                error : function(data) {
+                    //alert("실패");
+                }
+            });
+        }
+
+
+
+        function get720Number(btnType){
+            var drwNo = 0;
+            var number = "";
+
+            if(btnType == "before"){
+                drwNo =	Number($("#drwNo720").text()) - 1;
+            }else if(btnType == "start"){
+                drwNo = 182;
+            }else{
+                drwNo =	Number($("#drwNo720").text()) + 1;
+            }
+            if("182" < drwNo){
+                alert("다음 회차가 없습니다.");
+                return;
+            }
+            $.ajax({
+                type: 'POST',
+                url: "/common.do?method=get720Number",
+                data : "drwNo=" + drwNo,
+                dataType    :'json',
+                async:false,
+                success : function(data) { // 성공했을때 콜백함수
+                    var number720 = "";
+                    /* var tipVal = "";
+
+                    var tmpDate = new Date();
+                    var tmpDay = tmpDate.getDay();
+                    var tmpHour = tmpDate.getHours();
+                    var tmpMday= "";
+                    var tmpRound = Number(data.MaxPensionWinRound720)+1;
+                    //alert(data.MaxPensionWinRound720);
+                    //0 1 2 3 4 5 6
+                    if(tmpDay == 4) {
+                        tmpMday = 7;
+                    }  else if(tmpDay == 5) {
+                        tmpMday = 6;
+                    } else if(tmpDay == 6) {
+                        tmpMday = 5;
+                    } else if(tmpDay == 0) {
+                        tmpMday = 4;
+                    } else if(tmpDay == 1) {
+                        tmpMday = 3;
+                    } else if(tmpDay == 2) {
+                        tmpMday = 2;
+                    } else if(tmpDay == 3) {
+                        tmpMday = 1;
+                    }
+                    */
+                    if(data.rows.length == 0){
+                        alert("이전 회차가 없습니다.");
+                        return;
+                    }
+                    /*
+                    if(tmpDay == 4 && (tmpHour >= 10 && tmpHour <= 17)) {
+                        $("#tipRolling").css("display", "none");
+                    } else {
+
+                        $("#tipRolling").css("display", "");
+                        tipVal += "<dl class='rolling_tip'>";
+                        tipVal += "<dt>구매팁!</dt>";
+                        tipVal += "<dd><div id='tip_list'><ul>";
+                        if(tmpDay == 4 && tmpHour < 10){
+                            tipVal += "<li>"+tmpRound+"회차 판매마감 오늘 오전 10시까지!</li>";
+                        } else if(tmpDay == 4 && tmpHour > 17){
+                            tipVal += "<li>"+tmpRound+"회차 판매마감까지 앞으로" + tmpMday + "일!</li>";
+                        } else if(tmpDay != 4) {
+                            tipVal += "<li>"+tmpRound+"회차 판매마감까지 앞으로" + tmpMday + "일!</li>";
+                        }
+                        tipVal += "<li>모든 조 구매 시 1, 2등 동시 당첨 가능(총 당첨금 21.6억원)</li>";
+                        tipVal += "<li>판매점, 인터넷 동일한 세트 구매 시 총 당첨금 43.2억원</li>";
+                        tipVal += "<li>원하는 번호가 있다면 지금 바로 구매하기!</li>";
+                        tipVal += "<li>세트구매란? 동일한 6자리 번호를 1조~5조까지 모두 구입</li>";
+                        tipVal += "<li>로또6/45보다 1.6배 높은 당첨 기회</li>";
+                        tipVal += "<li>안정적인 생활을 위한 연금복권720+</li>";
+                        tipVal += "<li>모든 조 구매 시 매월 1,100만원 x 10년 + 700만원 10년</li>";
+                        tipVal += "</ul></div></dd>";
+                        tipVal += "</dl>";
+
+                        $("#tipRolling").html(tipVal);
+                    } */
+                    $("#drwNo720").text(data.rows[0].round);
+                    if(data.rows[0].pensionDrawDate != null && data.rows[0].pensionDrawDate != "" ){
+                        $("#drawDate720").text("("+data.rows[0].pensionDrawDate.substring(0,10)+" 추첨)");
+                    }else{
+                        $("#drawDate720").text("[]");
+                    }
+                    for(var i=0; i<data.rows2.length ; i++) {
+                        //alert(data.rows2[i].rank);
+                        if(data.rows2[i].rank == "1" || data.rows2[i].rank == "2" || data.rows2[i].rank == "21") {
+                            if(data.rows2[i].rank == "1" || data.rows2[i].rank == "2") {
+                                number720 += "<div class='win_num_wrap'>";
+
+                                if(data.rows2[i].rank == "1") {
+                                    number720 += "<dl class='win_money'>";
+                                    number720 += "<dt>1등</dt>";
+                                    number720 += "<dd>월 <span class='num'>700</span>만원 x <span class='num'>20</span>년</dd>";
+                                    number720 += "</dl>";
+                                } else if(data.rows2[i].rank == "2") {
+                                    number720 += "<dl class='win_money'>";
+                                    number720 += "<dt>2등</dt>";
+                                    number720 += "<dd>월 <span class='num'>100</span>만원 x <span class='num'>10</span>년</dd>";
+                                    number720 += "</dl>";
+                                }
+
+                                number720 += "<div class='win720_num'>";
+
+                                if(data.rows2[i].rank == "1") {
+                                    number720 += "<div class='group'>";
+                                    number720 += "<span class='num'><span>" + data.rows2[i].rankClass + "</span></span>";
+                                    number720 += "<em>조</em>";
+                                    number720 += "</div>";
+                                }
+                                number720 += "<span class='num al720_color1'><span>" + data.rows2[i].rankNo.substring(0,1) + "</span></span>";
+                                number720 += "<span class='num al720_color2'><span>" + data.rows2[i].rankNo.substring(1,2) + "</span></span>";
+                                number720 += "<span class='num al720_color3'><span>" + data.rows2[i].rankNo.substring(2,3) + "</span></span>";
+                                number720 += "<span class='num al720_color4'><span>" + data.rows2[i].rankNo.substring(3,4) + "</span></span>";
+                                number720 += "<span class='num al720_color5'><span>" + data.rows2[i].rankNo.substring(4,5) + "</span></span>";
+                                number720 += "<span class='num al720_color6'><span>" + data.rows2[i].rankNo.substring(5,6) + "</span></span>";
+                                number720 += "</div>";
+                                number720 += "</div>";
+
+                            } else if(data.rows2[i].rank == "21") {
+                                number720 += "<div class='win_num_wrap tb_line'>";
+                                number720 += "<dl class='win_money'>";
+                                number720 += "<dt>보너스</dt>";
+                                number720 += "<dd>월 <span class='num'>100</span>만원 x <span class='num'>10</span>년</dd>";
+                                number720 += "</dl>";
+                                number720 += "<div class='win720_num'>";
+                                number720 += "<div class='group bonus'>";
+                                number720 += "<span class='num'><span>각</span></span>";
+                                number720 += "<em>조</em>";
+                                number720 += "</div>";
+                                number720 += "<span class='num al720_color1'><span>" + data.rows2[i].rankNo.substring(0,1) + "</span></span>";
+                                number720 += "<span class='num al720_color2'><span>" + data.rows2[i].rankNo.substring(1,2) + "</span></span>";
+                                number720 += "<span class='num al720_color3'><span>" + data.rows2[i].rankNo.substring(2,3) + "</span></span>";
+                                number720 += "<span class='num al720_color4'><span>" + data.rows2[i].rankNo.substring(3,4) + "</span></span>";
+                                number720 += "<span class='num al720_color5'><span>" + data.rows2[i].rankNo.substring(4,5) + "</span></span>";
+                                number720 += "<span class='num al720_color6'><span>" + data.rows2[i].rankNo.substring(5,6) + "</span></span>";
+                                number720 += "</div>";
+                                number720 += "</div>";
+                            }
+                        }
+                    }
+                    $("#number720add").html(number720);
+                    if(btnType  == "start"){
+                        numberSns720="연금복권720+ 182회 당첨번호"+ data.rows[0].rankClass +"조" +data.rows1[0].rankClass + ","+"1등 월700만원X20년, https://www.dhlottery.co.kr/gameResult.do?method=win720";
+                    }
+
+                    /* $('#tip_list').vTicker({
+                        speed: 500,
+                        pause: 3000,
+                        animation: 'fade',
+                        mousePause: false,
+                        showItems: 3
+                    }); */
+                },
+                error : function(data) {
+                    //alert("실패");
+                }
+            });
+        }
+        //sns 645 링크
+        function openSNS(type) {
+            var href = "";
+            var name = "";
+            var msg = "동행복권 로또6/45 "+$("#lottoDrwNo").text() +"회 당첨번호 " + $("#drwtNo1").text() + ","
+                + $("#drwtNo2").text() + ","+ $("#drwtNo3").text() + ","
+                + $("#drwtNo4").text() + "," + $("#drwtNo5").text() + ","
+                + $("#drwtNo6").text() + " 보너스" + $("#bnusNo").text()
+                +". 1등" + $("#lottoNo1Su").text()+"게임 총 당첨금액 약 "+$("#lottoNo1TotalAmt").text()+"억원, 1게임당 당첨금액 약 "+$("#lottoNo1SuAmount").text()+"억원";
+
+            var url =  "https://www.dhlottery.co.kr";
+            var date = new Date();
+            var d = ''+date.getFullYear() + (date.getMonth()+1) + date.getDate();
+            if(type == '1'){
+                href = "http://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url + "/gameResult.do?method=byWin&t=동행복권&d="+d);
+                name = "facebook";
+                window.open(href, name);
+            }else if(type == '2') {
+                href = "http://twitter.com/share?url="+url+"&text="+encodeURI(msg);
+                name = "twitter";
+                window.open(href, name);
+            }
+        }
+
+
+        function openSNS520(type) {
+            var href = "";
+            var name = "";
+            var msg = numberSns520;
+            var url =  'https://www.dhlottery.co.kr';
+            var date = new Date();
+            var d = ''+date.getFullYear() + (date.getMonth()+1) + date.getDate();
+            if(type == '1'){
+                href = "http://www.facebook.com/sharer/sharer.php?u="+ encodeURIComponent(url + "/gameResult.do?method=win520&t=동행복권&d="+d);
+                name = "facebook";
+                window.open(href, name);
+            }else if(type == '2') {
+                href = "http://twitter.com/share?url="+url+"&text="+encodeURI(msg);
+                name = "twitter";
+                window.open(href, name);
+            }
+        }
+
+
+
+        function getJackpot(){
+            $.ajax({
+                type:"get",                             // 메소드타입
+                url:"https://el.dhlottery.co.kr/lotto/jackpot/mobile_jackpot.jsp?lotto_name=MAIN",  //  url
+                dataType:"jsonP",                       //이부분이 중요 데이타타입을 jsonP로 해줘야 크로스도메인을 이용할수 있다.
+                jsonp : 'callback',                     // 콜백함수 이름 명이다.
+                error: function() {                     // 에러날경우 콜백함수
+                    console.log("에러")
+                },
+                success: function(data){        		// 성공했을때 콜백함수
+                    $("#powerballJ").text(numberFormat(data.POWER.replace(/[^0-9]/g, ""))); //파워볼 1등 JackPot
+                    $("#doubleJackJ").text(numberFormat(data.DJACK.replace(/[^0-9]/g, "")));	//더블잭 1등 JackPot
+                    $("#megaBingoJ").text(numberFormat(data.BINGO.replace(/[^0-9]/g, "")));	//메가빙고 1등 JackPot
+                    $("#speedKinoJ").text(numberFormat(data.KENO.replace(/[^0-9]/g, "")));	//스피드키노 JackPot
+                    $("#tHunterJ").text(numberFormat(data.THUNT.replace(/[^0-9]/g, "")));	//thunter
+
+                    jackpot_save_amt.powerball = Number(data.POWER);
+                    jackpot_save_amt.speedKino = Number(data.KENO);
+                    jackpot_save_amt.tHunter = Number(data.THUNT);
+                    jackpot_save_amt.megaBingo = Number(data.BINGO);
+                    jackpot_save_amt.doubleJack = Number(data.DJACK);
+                    jackpot_save_amt.catchMe = Number(10000000);
+                    jackpot_save_amt.tluck = Number(50000000);
+                    jackpotEffect();
+                }});
+            //clearInterval(intervalId);
+        }
+
+        var jackpot_save_amt = new Object();
+        var jackpot_amt = new Object();
+        jackpot_amt.powerball = 9999999999;
+        jackpot_amt.speedKino = 9999999999;
+        jackpot_amt.tHunter = 9999999999;
+        jackpot_amt.megaBingo = 9999999999;
+        jackpot_amt.doubleJack = 9999999999;
+        //jackpot_amt.catchMe = ;
+        //jackpot_amt.tluck = 9999999999;
+        function jackpotEffect(){
+            if(jackpot_amt.powerball < jackpot_save_amt.powerball){
+                //$("#layer_ld14").addClass("icon_jackpot");
+                $("#layer_ld14").attr("class","ico_jackpot").html("당첨임박");
+            }
+            if(jackpot_amt.speedKino < jackpot_save_amt.speedKino){
+                //$("#layer_ld10").addClass("icon_jackpot");
+                $("#layer_ld10").attr("class","ico_jackpot").html("당첨임박");
+            }
+            if(jackpot_amt.tHunter < jackpot_save_amt.tHunter){
+                //$("#layer_li22").addClass("icon_jackpot");
+                $("#layer_li22").attr("class","ico_jackpot").html("당첨임박");
+            }
+            if(jackpot_amt.megaBingo < jackpot_save_amt.megaBingo){
+                //$("#layer_ld11").addClass("icon_jackpot");
+                $("#layer_ld11").attr("class","ico_jackpot").html("당첨임박");
+            }
+            if(jackpot_amt.doubleJack < jackpot_save_amt.doubleJack){
+                //$("#layer_ld20").addClass("icon_jackpot");
+                $("#layer_ld20").attr("class","ico_jackpot").html("당첨임박");
+            }
+            if(jackpot_amt.catchMe < jackpot_save_amt.catchMe){
+                //$("#layer_li23").addClass("icon_jackpot");
+                $("#layer_li23").attr("class","ico_jackpot").html("당첨임박");
+            }
+            if(jackpot_amt.tluck < jackpot_save_amt.tluck){
+                //$("#layer_li21").addClass("icon_jackpot");
+                $("#layer_li21").attr("class","ico_jackpot").html("당첨임박");
+            }
+        }
+
+        //공지,언론홍보 사항
+        function noticeUrl(){
+            if($("#noticeBtn").find('.active').text() == "공지사항"){
+                location.href =	"/service.do?method=noticeList";
+            }else if($("#noticeBtn").find('.active').text() == "언론홍보"){
+                location.href =	"/happy.do?method=fundPressPrList";
+            }else{
+                location.href =	"/board.do?method=noticeBbsList&bbsTy=40";
+            }
+        }
+
+        function decorateWidget(id) {
+            var $twwgt = $(id);
+            var decorate = function($el) {
+                $el.find(".timeline-header").css("display","none");
+                $el.find(".timeline-footer").css("display","none");
+                $el.find(".stream").css("height","135px");
+                $el.find(".p-name.customisable-highlight").css("font-family","Dotum,돋움");
+                $el.find(".p-name.customisable-highlight").css("font-size","12px");
+                $el.find(".e-entry-title").css("font-family","Dotum,돋움");
+                $el.find(".e-entry-title").css("font-size","11px");
+                return $el;
+            };
+            try{
+                if ($twwgt.length > 0 && $twwgt[0].contentWindow.document.body.innerHTML !== "") {
+                    decorate($($twwgt[0].contentWindow.document));
+                } else {
+                    setTimeout(function() {
+                        decorateWidget(id);
+                    }, 500);
+                }
+            }catch(e){
+                //alert("페이지 코드가 없습니다. 또는 페이지 이름이 없습니다.");
+            }
+        }
+
+        /**
+         * 이용안내 팝업을 호출한다.
+         **/
+        function openUserGuide(strGubun) {
+            var strParam = "lotto_id=" + strGubun;
+            var strUrl = "/popup/movie_guide/guide.jsp?" +strParam;
+            var popwidth   = 560;
+            var popheight  = 315;
+            var winName    = "이용안내영상";
+            var new_popup = centerPop(strUrl, winName, popwidth, popheight, 'no');
+        }
+
+        /*
+         * QR안내 페이지 팝업 호출
+        **/
+        function pop_qr() {
+            var strUrl = "/jspcall.do?method=call&url=counsel/pop_qr";
+            var popwidth   = 600;
+            var popheight  = 793;
+            var winName    = "QR코드 당첨확인";
+            var new_popup = centerPop(strUrl, winName, popwidth, popheight, 'no');
+        }
+        //랜덤 이미지
+        function randomImg(){
+            var img = new Array();
+            img[0] = "/img/clean_poster_banner.jpg";
+            img[1] = "/img/clean_poster_banner1.jpg"
+            var link = new Array();
+            link[0] = "https://clean.dhlottery.co.kr";
+            link[1] = "https://www.ngcc.go.kr";
+            var alt = new Array();
+            alt[0] = "건전화포스터";
+            alt[1] = "사감위";
+            var random = Math.floor(Math.random() * img.length);
+            $('#clean_banner img').attr({src : img[random], alt : alt[random]});
+            $('#clean_banner a').attr({href : link[random]});
+        }
+
+        function changeBoard(n){
+            var div = $("#divBoard");
+            div.find(".wrap").removeClass("active");
+            div.find(".wrap" + n).addClass("active");
+        }
+
+        //이벤트존 롤링 처리
+        var mainEventZone = function(){
+            var zone = $("#eventZone");
+            var btn_prev = zone.find(".prev");
+            var btn_next = zone.find(".next");
+            var btn_stop = zone.find(".stop");
+            var btn_play = zone.find(".play");
+            var paging = zone.find(".paging");
+            var list = zone.find("ul");
+            var length = list.find("li").length;
+            var countp = 0;
+            var itvtime = 3000;
+            var interval;
+            var autoplay = true;
+
+            function _rolling(clr){
+                var pnum = countp + 1;
+                paging.html("<strong>" + pnum + "</strong> / <span>" + length + "</span>");
+                list.find("li.active").css("z-index","1").removeClass("active");
+                list.find("li").eq(countp).css("z-index","2").addClass("active").animate({opacity:1},700,function(){
+                    list.find("li").not(".active").css("z-index","").css("opacity","0");
+                    if(clr){
+                        _interval();
+                    }
+                });
+            }
+
+            function _interval(){
+                interval = setInterval(function(){
+                    if(countp == length - 1){
+                        countp = 0;
+                    }else{
+                        countp = countp + 1;
+                    }
+                    _rolling();
+                }, itvtime);
+            }
+            btn_prev.click(function(e){
+                e.preventDefault();
+                if(countp == 0){
+                    countp = length - 1;
+                }else{
+                    countp = countp - 1;
+                }
+                clearInterval(interval);
+                if(autoplay == true){
+                    _rolling(true);
+                }else{
+                    _rolling();
+                }
+            });
+            btn_next.click(function(e){
+                e.preventDefault();
+                if(countp == length - 1){
+                    countp = 0;
+                }else{
+                    countp = countp + 1;
+                }
+                clearInterval(interval);
+                if(autoplay == true){
+                    _rolling(true);
+                }else{
+                    _rolling();
+                }
+            });
+
+            btn_stop.click(function(e){
+                e.preventDefault();
+                btn_stop.hide();
+                btn_play.show();
+                clearInterval(interval);
+                autoplay = false;
+            });
+
+            btn_play.click(function(e){
+                e.preventDefault();
+                btn_stop.show();
+                btn_play.hide();
+                _interval();
+                autoplay = true;
+            });
+
+            list.find("li").eq(0).css("z-index","1").css("opacity",1).addClass("active");
+            paging.html("<strong>1</strong> / <span>" + length + "</span>");
+            _interval();
+
+        };
+
+        //스피또안내팝업
+        function openSpeettoPopup(){
+
+            var url = "/jspcall.do?method=call&url=user/speettoClause";
+            commonPop("", url, 600, 630, 'no');
+
+        }
+    </script>
+
+    <!-- <style type="text/css">
+    .fb-container {
+        width: 364px;
+        height: 230px;
+        overflow: hidden;
+    }
+
+    .fb-container > div {
+         margin: -70px 0px 0px -1px;
+    }
+    </style> -->
+</head>
+
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div>
+
+
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var curPage = document.location.href;
+            var mainBannerUrl = "/common.do?method=getMainBannerList";
+
+            if(curPage.indexOf("https") > -1){
+                mainBannerUrl = "/userSsl.do?method=getMainBannerList";
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: mainBannerUrl,
+                data : "",
+                dataType    :'json',
+                async:false,
+                success : function(data) { // 성공했을때 콜백함수
+                    var mainBanner = "";
+
+                    if(data.returnValue == "fail"){
+                        //alert("사용중인 배너가 없습니다.");
+                        return;
+                    }
+
+                    if (data.mainBannerList == null || data.mainBannerList == "") {
+                        mainBanner = "";
+                    } else {
+                        for(var i=0; i<data.mainBannerList.length ; i++) {
+                            mainBanner += "<div class='band_banner' style='background:"+data.mainBannerList[i].bgColor+"';>";
+                            /* mainBanner += "<div class='band_banner' style='background:#e0e6f4';>"; */
+                            mainBanner += "<div class='inner_band_banner' ;>";
+                            mainBanner += "<a href='"+data.mainBannerList[i].link+"' target='"+data.mainBannerList[i].target+"' class='img_banner'>"
+                            mainBanner += "<img src='/img/event/main_banner/"+data.mainBannerList[i].physclFileNm+"'></a>";
+                            /* mainBanner += "<img src='/images/event/main_banner/pc_banner.png'></a>"; */
+                            mainBanner += "<a class='btn_close' href='javascript:today_close_popup();'>하루 동안 보지 않기</a>";
+                            mainBanner += "</div>";
+                            mainBanner += "</div>";
+                        }
+                    }
+
+                    $("#band_banner").html(mainBanner);
+                },
+                error : function(data) {
+                    //alert("사용중인 배너가 없습니다.");
+                }
+            });
+
+            var banner = $(".slider > li"),
+                bannerLength = banner.length,
+                targetNum = 0, //보여질 숫자
+                currentNum = 0, //보여지고있는 숫자
+                speed = 400, //애니메이트 속도
+                delay = 5000, //재생타임
+                isPlay = true, //자동재생중일때 true
+                isTween = false; //false일때만 이동가능
+
+            function initBanner(){
+                if(bannerLength > 1){//배너가 두개 이상일때만 슬라이드실행
+                    bnrSlide();
+                }
+                todayCookie();//쿠키실행
+            }
+
+            function bnrSlide(){
+                banner.not(":first").hide();
+                timer = setInterval(nextMove, delay); //인터벌
+
+                //아이콘 클릭
+                $(".icon_count a").on("click", function(e){
+                    e.preventDefault();
+                    clearInterval(timer);
+                    var iconIdx = $(this).index();
+                    if(iconIdx == currentNum){
+                        if(isPlay == true){
+                            timer = setInterval(nextMove, delay);
+                        } else {
+                            return;
+                        }
+
+                    } else {
+                        bannerMove(iconIdx);
+                    }
+                });
+
+                //stop 클릭
+                $(".play_stop .stop").on("click", function(e){
+                    e.preventDefault();
+                    clearInterval(timer);
+                    $(this).hide();
+                    $(".play_stop .play").show();
+                    isPlay = false;
+                });
+
+                //play 클릭
+                $(".play_stop .play").on("click", function(e){
+                    e.preventDefault();
+                    timer = setInterval(nextMove, delay);
+                    $(this).hide();
+                    $(".play_stop .stop").show();
+                    isPlay = true;
+                });
+
+                function nextMove(){
+                    targetNum = currentNum +1;
+                    if(targetNum >= bannerLength){
+                        targetNum = 0;
+                    }
+                    bannerMove(targetNum);
+                }
+
+                function bannerMove(idx){
+                    if(isTween){return;}
+                    isTween = true; //이동불가
+                    iconReplace(idx);
+
+                    banner.eq(currentNum).css("z-index", 0);
+                    banner.eq(idx).css("z-index", 1).fadeIn(speed, function(){
+                        banner.eq(currentNum).hide();
+                        tweenComplete(idx);
+                    });
+                }
+
+                //아이콘 리플레이스
+                function iconReplace(idx){
+                    $(".icon_count a").removeClass("on");
+                    $(".icon_count a").eq(idx).addClass("on");
+                }
+
+                //애니메이트 완료
+                function tweenComplete(idx){
+                    currentNum = idx;
+                    isTween = false;
+                    if(isPlay){
+                        if(timer)clearInterval(timer);
+                        timer = setInterval(nextMove, delay);
+                    }
+                }
+            }
+
+            function todayCookie(){
+                var banner_cookie = $.cookie('cookie');
+
+                if(banner_cookie == undefined){//쿠키가없으면
+                    $(".top_banner_wrap").show();//팝업 열기
+
+                    $(".btn_top_bnr_close").on("click", function(e){//팝업 닫기 클릭
+                        e.preventDefault();
+
+                        if($("#today").is(":checked")){
+                            $.cookie('cookie', 'today', {expires: 1, page:'/'});//메인만 쿠키 1일 설정
+                            $(".top_banner_wrap").slideUp(400);
+                        } else {
+                            $(".top_banner_wrap").slideUp(400);
+                        }
+                    });
+                }
+            }
+
+            initBanner();
+
+            if( $.cookie("show_popup") == "false" ) {
+                close_popup();
+            } else {
+                $("#band_banner").show();
+            }
+        });
+
+        function close_popup() {
+            $("#band_banner").hide();
+        }
+
+        function today_close_popup() {
+            today = new Date();
+            $.cookie( "show_popup", "false", { path: "/", expires : 1 } );
+            close_popup();
+        }
+    </script>
+    <ul id="skipnavigation">
+        <li><a href="#article">본문 바로가기</a></li>
+    </ul>
+
+    <header class="topHeader">
+        <!-- 배너 -->
+        <div id="band_banner"></div>
+
+        <div class="header_con">
+            <div class="logo">
+                <h1><a href="/common.do?method=main">동행복권</a></h1>
+            </div>
+            <div class="top_menu">
+
+                <script type="text/javascript" src="/js/link.js" charset="utf-8"></script>
+                <form name="frmLogin">
+                    <div class="topAccount">
+
+
+
+                        <ul class="account">
+                            <li class="log"><a class="btn_common sml"
+                                               href="/user.do?method=login&returnUrl=">로그인</a></li>
+                            <li class="devide"><a class="btn_common sml blu"
+                                                  href="/loginJoin.do?method=joinFormAgree">회원가입</a></li>
+                            <li><a class="btn_common sml gblu" href="/userSsl.do?method=myPage">마이페이지</a></li>
+                            <li><a class="btn_common sml gblu" href="/counsel.do?method=callCenter">고객센터</a></li>
+                        </ul>
+
+
+                    </div>
+                </form>
+
+
+
+
+
+
+            </div>
+        </div>
+    </header>
+
+
+</div>
+
+
+
+
+
+
+<div class="nav_wrap" style="z-index:999;">
+    <nav class="gnbNav">
+
+        <div id="gnb" class="gnb">
+            <ul>
+                <!-- <li class="gnb1"><a href="/gameBuy.do?method=gameBuyHome"></a></li> -->
+                <li class="gnb1"><a href="javascript:void(0)">복권구매</a>
+                    <div class="group">
+                        <ul>
+                            <li class="gnb1_1"><a href="javascript:goLottoBuy(2);" title="새창 열림"
+                                                  onclick="javascript:goWiseLogMain('&wiselog=H_A_1_1');"><strong>로또 6/45</strong><span>매주 토요일 추첨<br>6개 숫자 직접 선택</span></a>
+                            </li>
+                            <li class="gnb1_5"><a href="javascript:goGameElInfo('LI21',2,'Y');" title="트리플럭"
+                                                  onclick="javascript:goWiseLogMain('&wiselog=H_A_1_5');"><strong>트리플럭</strong><span>한번에 3게임! 1등 5억원<br>즉석식 긁는 복권</span></a>
+                            </li>
+                            <li class="gnb1_9"><a href="javascript:goGameElInfo('LD20',2,'N');" title="더블잭마이더스"
+                                                  onclick="javascript:goWiseLogMain('&wiselog=H_A_1_9');"><strong>더블잭마이더스</strong><span>같은 그림이 나오면 당첨<br>구매즉시 당첨확인</span></a>
+                            </li>
+                            <li class="gnb1_8"><a href="javascript:goGameElInfo('LI23',2,'N');" title="캐치미"
+                                                  onclick="javascript:goWiseLogMain('&wiselog=H_A_1_8');"><strong>캐치미</strong><span>당첨금 x 5배 선택가능<br>보너스 게임 기회도~</span></a>
+                            </li>
+                            <li class="gnb1_7"><a href="javascript:goGameElInfo('LI22',2,'N');" title="트레져헌터"
+                                                  onclick="javascript:goWiseLogMain('&wiselog=H_A_1_7');"><strong>트레져헌터</strong><span>왕관이 5개 나오면 1등<br>심볼매치형 즉석복권</span></a>
+                            </li>
+                            <li class="gnb1_6"><a href="javascript:goGamePnInfo('LP72',2,'N');" title="연금복권720+"
+                                                  onclick="javascript:goWiseLogMain('&wiselog=H_A_1_6');"><strong>연금복권720+</strong><span>매주 목요일 추첨<br>700만원씩 20년 지급</span></a>
+                            </li>
+                            <li class="gnb1_2"><a href="javascript:goGameElEnInfo('LD14',2,'N','N');" title="파워볼"
+                                                  onclick="javascript:goWiseLogMain('&wiselog=H_A_1_2');"><strong>파워볼</strong><span>5분마다 추첨<br>최고당첨금 3억원</span></a>
+                            </li>
+                            <li class="gnb1_3"><a href="javascript:goGameElEnInfo('LD10',2,'N','N');" title="스피드키노"
+                                                  onclick="javascript:goWiseLogMain('&wiselog=H_A_1_3');"><strong>스피드키노</strong><span>5분마다 추첨<br>숫자 10개 일치시 1등</span></a>
+                            </li>
+                            <li class="gnb1_4"><a href="javascript:goGameElEnInfo('LD11',2,'N','N');" title="메가빙고"
+                                                  onclick="javascript:goWiseLogMain('&wiselog=H_A_1_4');"><strong>메가빙고</strong><span>8분마다 추첨<br>가장 높은 당첨확률</span></a>
+                            </li>
+                            <li class="gnb1_10"><a href="javascript:sample_random_pop('');" title="샘플게임"
+                                                   onclick="javascript:goWiseLogMain('&wiselog=H_A_1_10');"><span>샘플게임 <br>해보기</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="basic gnb2"><a href="/gameInfo.do?method=gameMethod&wiselog=H_B_1_1">복권정보</a>
+                    <div class="group">
+                        <ul>
+                            <li><a href="/gameInfo.do?method=gameMethod&wiselog=H_B_1_1">로또6/45</a>
+                                <ul class="snb_dep3">
+                                    <li><a href="/gameInfo.do?method=gameMethod&wiselog=H_B_1_1">로또 6/45 소개</a></li>
+                                    <li><a href="/gameInfo.do?method=buyLotto&wiselog=H_B_1_2">구매하기</a></li>
+                                    <li><a href="/gameInfo.do?method=buyInfo&wiselog=H_B_1_3">구매방법</a></li>
+                                    <li><a href="/gameInfo.do?method=lotMethod&wiselog=H_B_1_4">추첨안내</a></li>
+                                    <li><a href="/gameInfo.do?method=statHistory&wiselog=H_B_1_5">로또 히스토리</a></li>
+                                </ul>
+                            </li>
+
+                            <li><a href="/gameInfo.do?method=game720Guide&wiselog=H_B_5_1">연금복권720+</a>
+                                <ul class="snb_dep3">
+                                    <li><a href="/gameInfo.do?method=game720Guide&wiselog=H_B_5_1">연금복권720+ 소개</a>
+                                    </li>
+                                    <li><a href="/gameInfo.do?method=game720Method&wiselog=H_B_5_2">구매하기</a></li>
+                                    <li><a href="/gameInfo.do?method=game720Info&wiselog=H_B_5_3">구매방법</a></li>
+                                    <li><a href="/gameInfo.do?method=game720lotInfo&wiselog=H_B_5_4">추첨안내</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="/gameInfo.do?method=inetbokBuyInfo&wiselog=H_B_3_1">전자복권</a>
+                                <ul class="snb_dep3">
+                                    <li><a href="/gameInfo.do?method=inetbokBuyInfo&wiselog=H_B_3_1">게임안내</a></li>
+                                    <li><a
+                                            href="/gameInfo.do?method=lottoMainView&lottoId=LD14&wiselog=H_B_3_2">파워볼</a>
+                                    </li>
+                                    <li><a
+                                            href="/gameInfo.do?method=lottoMainView&lottoId=LD10&wiselog=H_B_3_3">스피드키노</a>
+                                    </li>
+                                    <li><a
+                                            href="/gameInfo.do?method=lottoMainView&lottoId=LD11&wiselog=H_B_3_6">메가빙고</a>
+                                    </li>
+                                    <li><a
+                                            href="/gameInfo.do?method=lottoMainView&lottoId=LI21&wiselog=H_B_3_5">트리플럭</a>
+                                    </li>
+                                    <li><a
+                                            href="/gameInfo.do?method=lottoMainView&lottoId=LI22&wiselog=H_B_3_4">트레져헌터</a>
+                                    </li>
+                                    <li><a
+                                            href="/gameInfo.do?method=lottoMainView&lottoId=LD20&wiselog=H_B_3_7">더블잭마이더스</a>
+                                    </li>
+                                    <li><a
+                                            href="/gameInfo.do?method=lottoMainView&lottoId=LI23&wiselog=H_B_3_8">캐치미</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><a href="/gameInfo.do?method=speettoGameMethod&wiselog=H_B_4_1">즉석식인쇄복권</a>
+                                <ul class="snb_dep3">
+                                    <li><a href="/gameInfo.do?method=speettoGameMethod&wiselog=H_B_4_1">즉석식인쇄복권
+                                        소개</a></li>
+                                    <li><a href="/gameInfo.do?method=speetto500&wiselog=H_B_4_2">스피또 500</a></li>
+                                    <li><a href="/gameInfo.do?method=speetto1000&wiselog=H_B_4_3">스피또 1000</a></li>
+                                    <li><a href="/gameInfo.do?method=speetto2000&wiselog=H_B_4_4">스피또 2000</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="basic gnb3"><a href="/gameResult.do?method=byWin&wiselog=H_C_1_1">당첨결과</a>
+                    <div class="group">
+                        <ul>
+                            <li><a href="/gameResult.do?method=byWin&wiselog=H_C_1_1">로또6/45</a>
+                                <ul class="snb_dep3">
+                                    <li><a href="/gameResult.do?method=byWin&wiselog=H_C_1_1">회차별 당첨번호</a></li>
+                                    <li><a href="/gameResult.do?method=myWin&wiselog=H_C_1_2">내번호 당첨확인</a></li>
+                                    <li><a href="/gameResult.do?method=allWin&wiselog=H_C_1_3">당첨내역</a></li>
+                                    <li><a href="/gameResult.do?method=locInfo645&wiselog=H_C_1_4">당첨금 지급안내</a></li>
+                                    <li><a href="/gameResult.do?method=lotTv&wiselog=H_C_1_5">추첨방송 다시보기</a></li>
+                                    <li><a href="/gameResult.do?method=visitWinList&wiselog=H_C_1_6">추첨방송 참관신청</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li><a href="/gameResult.do?method=win720&wiselog=H_C_9_1">연금복권720+</a>
+                                <ul class="snb_dep3">
+                                    <li><a href="/gameResult.do?method=win720&wiselog=H_C_9_1">회차별 당첨번호</a></li>
+                                    <li><a href="/gameResult.do?method=myWin720&wiselog=H_C_9_2">내번호 당첨확인</a></li>
+                                    <li><a href="/gameResult.do?method=winResult720&wiselog=H_C_9_3">당첨내역</a></li>
+                                    <li><a href="/gameResult.do?method=locInfo720&wiselog=H_C_9_4">당첨금 지급안내</a></li>
+                                    <li><a href="/gameResult.do?method=lotInfo720&wiselog=H_C_9_5">추첨방송 다시보기</a>
+                                    </li>
+                                    <li><a href="/gameResult.do?method=visitWinList&tabGbn=2&wiselog=H_C_9_6">추첨방송
+                                        참관신청</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="/gameResult.do?method=winList&wiselog=H_C_3_1">전자복권</a></li>
+                            <li><a href="/gameResult.do?method=speettoWin&wiselog=H_C_4_1">즉석식인쇄복권</a>
+                                <ul class="snb_dep3">
+                                    <li><a href="/gameResult.do?method=speettoWin&wiselog=H_C_4_1">당첨내역</a></li>
+                                    <li><a href="/gameResult.do?method=speettoLotInfo&wiselog=H_C_4_2">당첨금 지급안내</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><a href="/gameResult.do?method=statIndex&wiselog=H_C_5_1">로또6/45 당첨통계</a>
+                                <ul class="snb_dep3">
+                                    <li><a href="/gameResult.do?method=statIndex&wiselog=H_C_5_1">당첨통계</a></li>
+                                    <li><a href="/gameResult.do?method=statByNumber&wiselog=H_C_5_2">번호별 통계</a></li>
+                                    <li><a href="/gameResult.do?method=statByColor&wiselog=H_C_5_3">색상 통계</a></li>
+                                    <li><a href="/gameResult.do?method=statGroupNum&wiselog=H_C_5_4">구간별 출현횟수</a>
+                                    </li>
+                                    <li><a href="/gameResult.do?method=noViewNumber&wiselog=H_C_5_5">기간별 미출현 번호</a>
+                                    </li>
+                                    <li><a href="/gameResult.do?method=statOddEven&wiselog=H_C_5_6">홀짝통계</a></li>
+                                    <li><a href="/gameResult.do?method=statConsNumber&wiselog=H_C_5_7">연속번호 출현</a>
+                                    </li>
+                                    <!-- <li><a href="/gameResult.do?method=statPattern&wiselog=H_C_5_8">패턴분석표</a></li> -->
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul>
+
+                            <li><a href="/gameResult.do?method=index720&wiselog=H_C_10_1"
+                                   class="show_font1">연금복권720+ 당첨통계</a></li>
+                            <li><a href="/gameResult.do?method=highWin&wiselog=H_C_7_1">당첨소식</a>
+                                <ul class="snb_dep3">
+                                    <li><a href="/gameResult.do?method=highWin&wiselog=H_C_7_1">당첨자 인터뷰</a></li>
+                                    <li><a href="/gameResult.do?method=winTalkList&boardType=T&wiselog=H_C_7_2">당첨
+                                        소감 게시판</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="/gameResult.do?method=notReceiveInfo&wiselog=H_C_8_1">미수령 당첨금</a>
+                                <ul class="snb_dep3">
+                                    <li><a href="/gameResult.do?method=notReceiveInfo&wiselog=H_C_8_1">로또6/45</a>
+                                    </li>
+
+                                    <li><a href="/gameResult.do?method=noRecieveInfo720">연금복권720+</a></li>
+                                    <li><a href="/gameResult.do?method=notReceiveInfoElec&wiselog=H_C_8_3">전자복권</a>
+                                    </li>
+                                    <li><a href="/gameResult.do?method=speetoNoGetList&wiselog=H_C_8_4">즉석식 인쇄복권</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="basic gnb4"><a href="/store.do?method=sellerInfo645&wiselog=H_D_1_1">판매점</a>
+                    <div class="group">
+                        <ul>
+                            <li><a href="/store.do?method=sellerInfo645&wiselog=H_D_1_1">구입처 안내</a>
+                                <ul class="snb_dep3">
+                                    <li><a href="/store.do?method=sellerInfo645&wiselog=H_D_1_1">로또6/45판매점 조회</a>
+                                    </li>
+                                    <li><a href="/store.do?method=sellerInfoPrint&wiselog=H_D_1_2">즉석 및 연금복권 판매점
+                                        조회</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="/store.do?method=topStore&pageGubun=L645&wiselog=H_D_2_1">당첨 판매점</a>
+                                <ul class="snb_dep3">
+                                    <li><a href="/store.do?method=topStore&pageGubun=L645&wiselog=H_D_2_1">회차별</a>
+                                    </li>
+                                    <!--
+                            <li><a href="/store.do?method=topStoreRank&rank=1&pageGubun=L645&wiselog=H_D_2_2">1등 배출점</a></li>
+                            <li><a href="/store.do?method=topStoreRank&rank=2&pageGubun=L645&wiselog=H_D_2_3">2등 배출점</a></li>
+                            -->
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="basic gnb5"><a href="/event.do?method=Eventend&wiselog=H_E_1_1">이벤트</a>
+                    <div class="group">
+                        <ul>
+                            <li><a href="/event.do?method=Eventend&wiselog=H_E_1_1">이벤트</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="basic gnb6"><a href="/counsel.do?method=knowledge&wiselog=H_F_1_1">행복공감</a>
+                    <div class="group">
+                        <ul>
+                            <li><a href="/counsel.do?method=knowledge&wiselog=H_F_1_1">건전한 복권문화</a>
+                                <ul class="snb_dep3">
+                                    <li><a href="/counsel.do?method=knowledge&wiselog=H_F_1_1">복권바로알기</a></li>
+                                    <li><a href="/happy.do?method=healthCultureProc&wiselog=H_F_1_2">건전구매 프로그램</a>
+                                    </li>
+                                    <li><a href="/user.do?method=campainVow&wiselog=H_F_1_3">건전화 캠페인</a></li>
+                                    <li><a href="/happy.do?method=healthCultureRule&wiselog=H_F_1_4">건전화 책임규정</a>
+                                    </li>
+                                    <li><a href="/happy.do?method=healthCulturePrevent&wiselog=H_F_1_5">복권 과몰입
+                                        예방법</a></li>
+                                    <li><a href="/happy.do?method=counselInfo&wiselog=H_F_1_6">중독예방 및 상담안내</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="/happy.do?method=fundInfo&wiselog=H_F_2_1">복권기금</a>
+                                <ul class="snb_dep3">
+                                    <li><a href="/happy.do?method=fundInfo&wiselog=H_F_2_1">복권기금소개</a></li>
+                                    <li><a href="/happy.do?method=fundAdvance&wiselog=H_F_2_2">기금사업활동</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="/happy.do?method=happySympathyService&wiselog=H_F_3_1">행복공감봉사단</a></li>
+                            <li><a href="/hero.do?method=info&wiselog=H_F_5_1">동행히어로</a>
+                                <ul class="snb_dep3">
+                                    <li><a href="/hero.do?method=info&wiselog=H_F_5_1">동행히어로란?</a></li>
+                                    <li><a href="/hero.do?method=multiList&wiselog=H_F_5_2">동행곱하기</a></li>
+                                    <li><a href="/hero.do?method=plusTemp&wiselog=H_F_5_3">동행더하기</a></li>
+                                    <li><a href="/hero.do?method=divTemp&wiselog=H_F_5_4">동행나누기</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="/webToon.do?method=toonList">복권이야기</a>
+                                <ul class="snb_dep3">
+                                    <li><a href="/webToon.do?method=toonList">복권웹툰</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li><a href="/happy.do?method=fundArchiveList&wiselog=H_F_4_1">홍보센터</a>
+                                <ul class="snb_dep3">
+                                    <li><a href="/happy.do?method=fundArchiveList&wiselog=H_F_4_1">광고</a></li>
+                                    <li><a href="/happy.do?method=fundPressPrList&wiselog=H_F_4_1">보도자료</a></li>
+                                    <li><a href="/service.do?method=noticeList&wiselog=H_F_4_1">공지사항</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <script>
+            /*
+* QR안내 페이지 팝업 호출
+**/
+            function pop_qr() {
+                var strUrl = "/popup/pop_qr.html";
+                var popwidth   = 600;
+                var popheight  = 793;
+                var winName    = "QR코드 당첨확인";
+
+                var new_popup = centerPop(strUrl, winName, popwidth, popheight, 'no');
+            }
+
+        </script>
+    </nav>
+</div>
+<div class="containerWrap">
+    <!-- pc일 경우 컨텐츠 영역 감싸는 마크업 추가  -->
+
+
+
+
+    <div id="article" class="contentSection main_section ver2">
+        <div class="wrap_box wrap1">
+            <section class="box win win645">
+                <header>
+                    <h2>로또 6/45</h2>
+
+                </header>
+                <div class="content">
+                    <h3><a id="goByWin1"
+                           href="/gameResult.do?method=byWin&wiselog=C_A_1_1"><strong id="lottoDrwNo">1091</strong>회
+                        <span class="txt">당첨결과</span>
+                        <span class="date" id="drwNoDate">(2023-10-28 추첨)</span></a></h3>
+                    <p class="num"><a id="numView" href="/gameResult.do?method=byWin&wiselog=C_A_1_1">
+                        <span class="accessibility">당첨번호</span>
+                        <span id="drwtNo1" class="ball_645 ball1">6</span>
+                        <span id="drwtNo2" class="ball_645 ball2">20</span>
+                        <span id="drwtNo3" class="ball_645 ball3">23</span>
+                        <span id="drwtNo4" class="ball_645 ball3">24</span>
+                        <span id="drwtNo5" class="ball_645 ball3">28</span>
+                        <span id="drwtNo6" class="ball_645 ball3">30</span>
+                        <span class="bonus">보너스번호</span>
+                        <span id="bnusNo" class="ball_645 ball5">44</span>
+                    </a></p>
+
+                    <div id="winnerId">
+
+
+
+
+
+
+
+
+                        <dl class="result">
+                            <dt>1등 총 당첨금</dt>
+                            <dd><strong>261억원</strong>(9명 / 29억)</dd>
+                        </dl>
+
+
+
+                    </div>
+                    <a class="go prev" href="javascript:getLottoNumber('before');">이전 회차 당첨정보 보기</a>
+                    <a class="go next" href="javascript:getLottoNumber('');">다음 회차 당첨정보 보기</a>
+                    <div class="btn">
+                        <span class="area"><a class="btn_common smid" href="/gameResult.do?method=byWin&wiselog=C_A_1_2">회차별 당첨결과</a></span>
+                        <span class="area"><a class="btn_common smid gblu" href="/gameInfo.do?method=buyLotto&wiselog=C_A_1_3">구매하기</a></span>
+                    </div>
+
+                </div>
+            </section>
+            <!-- 190225 신규 마크업 시작 -->
+            <section class="box win win520" style="display:none" id="win520">
+                <header>
+                    <h2>연금복권 520</h2>
+                    <ul class="sns">
+                        <li class="s1"><a href="javascript:openSNS520(1);" title="새 창">연금복권 520 461회 당첨결과 페이스북으로
+                            공유하기</a></li>
+                        <li class="s2"><a href="javascript:openSNS520(2);" title="새 창">연금복권 520 461회 당첨결과 트위터로
+                            공유하기</a></li>
+                    </ul>
+                </header>
+                <div class="content">
+                    <h3><a href="/gameResult.do?method=win520&wiselog=C_A_2_1"><span id="drwNo520">461</span>회
+                        당첨결과</a></h3>
+                    <span id="drawDate" class="date"></span>
+                    <div id="number520" class="nums">
+
+                        <p class="num"><a href="/gameResult.do?method=win520&wiselog=C_A_2_1">
+                            <span class="accessibility">1등 첫번째 번호</span>
+                            <span class="s">4조</span>
+                            <span class="n">2</span>
+                            <span class="n">4</span>
+                            <span class="n">5</span>
+                            <span class="n">5</span>
+                            <span class="n">8</span>
+                            <span class="n">6</span>
+                        </a></p>
+
+                        <p class="num"><a href="/gameResult.do?method=win520&wiselog=C_A_2_1">
+                            <span class="accessibility">1등 첫번째 번호</span>
+                            <span class="s">5조</span>
+                            <span class="n">5</span>
+                            <span class="n">5</span>
+                            <span class="n">4</span>
+                            <span class="n">7</span>
+                            <span class="n">1</span>
+                            <span class="n">1</span>
+                        </a></p>
+
+                    </div>
+                    <div class="info-rank">
+                        <span><strong>1등</strong>매달 500만원씩 20년 지급</span>
+                    </div>
+                    <a class="go prev" href="javascript:get520Number('before')">이전 회차 당첨정보 보기</a>
+                    <a class="go next" href="javascript:get520Number('')">다음 회차 당첨정보 보기</a>
+                    <img src="/images/main/img_lottery_win520.png" alt="월 500만원 * 20년 / 2매" />
+                    <div class="btn">
+                        <a class="btn_common smid" href="/gameResult.do?method=win520&wiselog=C_A_2_2">회차별 당첨결과</a>
+                        <a class="btn_common smid gblu"
+                           href="/gameInfo.do?method=game520Method&wiselog=C_A_2_3">구매하기</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 연금복권 720 Start-->
+            <section class="box win win720" id="win720">
+                <header>
+                    <h2>연금복권720+</h2>
+                </header>
+
+                <div id="tipRolling">
+                    <dl class="rolling_tip">
+                        <dt>구매팁!</dt>
+                        <dd>
+                            <div id="tip_list">
+                                <ul>
+
+                                    <li>183회차 판매마감까지 앞으로 4일!</li>
+
+                                    <li>모든 조 구매 시 1, 2등 동시 당첨 가능(총 당첨금 21.6억원)</li>
+                                    <li>판매점, 인터넷 동일한 세트 구매 시 총 당첨금 43.2억원</li>
+                                    <li>원하는 번호가 있다면 지금 바로 구매하기!</li>
+                                    <li>세트구매란? 동일한 6자리 번호를 1조~5조까지 모두 구입</li>
+                                    <li>로또6/45보다 1.6배 높은 당첨 기회</li>
+                                    <li>안정적인 생활을 위한 연금복권720+</li>
+                                    <li>모든 조 구매 시 매월 1,100만원 x 10년 + 700만원 10년</li>
+                                </ul>
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+
+                <div class="content">
+                    <h3><a href="/gameResult.do?method=win720&wiselog=C_A_4_1"><strong id="drwNo720">182</strong>회
+                        <span class="txt">당첨결과</span>
+                        <span id="drawDate720" class="date"></span></a>
+                    </h3>
+                    <!-- 1등 -->
+                    <div id="number720add">
+
+
+                        <div class="win_num_wrap" id="">
+
+                            <dl class="win_money">
+                                <dt>1등</dt>
+                                <dd>월 <span class="num">700</span>만원 x <span class="num">20</span>년</dd>
+                            </dl>
+
+
+                            <div class="win720_num">
+
+                                <div class="group">
+                                    <span class="num"><span>1</span></span>
+                                    <em>조</em>
+                                </div>
+
+                                <span class="num al720_color1"><span>9</span></span>
+                                <span class="num al720_color2"><span>9</span></span>
+                                <span class="num al720_color3"><span>3</span></span>
+                                <span class="num al720_color4"><span>7</span></span>
+                                <span class="num al720_color5"><span>5</span></span>
+                                <span class="num al720_color6"><span>0</span></span>
+                            </div>
+
+
+                        </div>
+
+
+
+
+                        <div class="win_num_wrap" id="">
+
+
+                            <dl class="win_money">
+                                <dt>2등</dt>
+                                <dd>월 <span class="num">100</span>만원 x <span class="num">10</span>년</dd>
+                            </dl>
+
+                            <div class="win720_num">
+
+                                <span class="num al720_color1"><span>9</span></span>
+                                <span class="num al720_color2"><span>9</span></span>
+                                <span class="num al720_color3"><span>3</span></span>
+                                <span class="num al720_color4"><span>7</span></span>
+                                <span class="num al720_color5"><span>5</span></span>
+                                <span class="num al720_color6"><span>0</span></span>
+                            </div>
+
+
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <div class="win_num_wrap tb_line">
+                            <dl class="win_money">
+                                <dt>보너스</dt>
+                                <dd>월 <span class="num">100</span>만원 x <span class="num">10</span>년</dd>
+                            </dl>
+                            <div class="win720_num">
+                                <div class="group bonus">
+                                    <span class="num"><span>각</span></span>
+                                    <em>조</em>
+                                </div>
+                                <span class="num al720_color1"><span>7</span></span>
+                                <span class="num al720_color2"><span>7</span></span>
+                                <span class="num al720_color3"><span>2</span></span>
+                                <span class="num al720_color4"><span>4</span></span>
+                                <span class="num al720_color5"><span>2</span></span>
+                                <span class="num al720_color6"><span>7</span></span>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <!-- 버튼 -->
+                    <a class="go prev" href="javascript:get720Number('before')">이전 회차 당첨정보 보기</a>
+                    <a class="go next" href="javascript:get720Number('')">다음 회차 당첨정보 보기</a>
+                    <div class="btn">
+
+                        <span class="area"><a class="btn_common smid navy" href="/gameResult.do?method=highWin&wiselog=C_D_3_8">당첨자 인터뷰 보기</a></span>
+                        <span class="area"><a class="btn_common smid" href="/gameResult.do?method=win720&wiselog=C_A_4_2">회차별 당첨결과</a></span>
+                        <span class="area"><a class="btn_common smid gblu" href="/gameInfo.do?method=game720Method&wiselog=C_A_4_3">구매하기</a></span>
+                    </div>
+                </div>
+            </section>
+            <!-- 연금복권 720 END -->
+            <!-- 연금복권 720 Start-->
+            <section class="box win win720"
+                     style="background-image:url(/images/main/main.png); no-repeat; display:none;" id="win720_img">
+
+                <header>
+                    <h2 style="color:#000;">연금복권720+</h2>
+                </header>
+                <div class="content">
+                    <div class="btn" style="margin-left: 350px; margin-top:323px;">
+                        <span class="area"><a class="btn_common smid gblu" href="/gameInfo.do?method=game720Method&wiselog=C_A_4_3">구매하기</a></span>
+                    </div>
+                </div>
+                <!-- </a> -->
+            </section>
+            <!-- 연금복권 720 END -->
+            <section class="box speetto-new win">
+                <header>
+                    <h2>즉석식 인쇄복권</h2>
+                </header>
+                <div class="content">
+                    <!-- 190318 slide영역으로 변경 -->
+                    <div class="slick_slide spt_group">
+                        <div class="slide_inner">
+
+                            <div class="slide_item">
+                                <div id="speetto2000" class="speetto-result" style="padding-top: 0px">
+                                    <strong class="tit">스피또 2000 <span>50</span>회</strong>
+                                    <!-- 190313 스피또 복권이미지영역 마크업 추가 -->
+                                    <div class="img_area" style="padding-bottom: 14px;">
+
+                                        <img src="img/board/content/1692764959432.png" alt="스피또 복권 이미지" />
+                                    </div>
+                                    <!-- //190313 스피또 복권이미지영역 마크업 추가 -->
+
+                                    <span class="date">[2023-10-27 기준]
+										<a href="javascript:openSpeettoPopup();" title="안내정보" >
+			                 				<img src="/images/common/ico_info.png" style="height: 16px;display: inline-block;width: auto;" alt="안내정보" title="안내정보">
+										</a>
+									</span>
+                                    <div class="quantity">
+                                        <strong class="tit">남은 수량</strong>
+                                        <a
+                                                href="/gameResult.do?method=speettoWin&lottoId=SP2000&wiselog=C_A_3_1">
+                                            <ul>
+                                                <li class="li1">
+                                                    <strong style="padding-top:25px;"><br/> 10억원</strong><span><em class="num">6</em> 매</span>
+                                                </li>
+                                                <li class="li2">
+                                                    <strong style="padding-top:25px;"><br/>1억원</strong><span><em class="num">18</em> 매</span>
+                                                </li>
+                                                <li class="li3">
+                                                    <strong style="padding-top:25px;"><br/> 1천만원</strong><span><em class="num">147</em> 매</span>
+                                                </li>
+                                                <li class="li4">
+                                                    <strong>출고율</strong><span><em class="num">23</em> %</span>
+                                                </li>
+                                            </ul>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slide_item">
+                                <div id="speetto2000" class="speetto-result" style="padding-top: 0px">
+                                    <strong class="tit">스피또 2000 <span>49</span>회</strong>
+                                    <!-- 190313 스피또 복권이미지영역 마크업 추가 -->
+                                    <div class="img_area" style="padding-bottom: 14px;">
+
+                                        <img src="img/board/content/1688691887802.png" alt="스피또 복권 이미지" />
+                                    </div>
+                                    <!-- //190313 스피또 복권이미지영역 마크업 추가 -->
+
+                                    <span class="date">[2023-10-27 기준]
+										<a href="javascript:openSpeettoPopup();" title="안내정보" >
+			                 				<img src="/images/common/ico_info.png" style="height: 16px;display: inline-block;width: auto;" alt="안내정보" title="안내정보">
+										</a>
+									</span>
+                                    <div class="quantity">
+                                        <strong class="tit">남은 수량</strong>
+                                        <a
+                                                href="/gameResult.do?method=speettoWin&lottoId=SP2000&wiselog=C_A_3_1">
+                                            <ul>
+                                                <li class="li1">
+                                                    <strong style="padding-top:25px;"><br/> 10억원</strong><span><em class="num">2</em> 매</span>
+                                                </li>
+                                                <li class="li2">
+                                                    <strong style="padding-top:25px;"><br/>1억원</strong><span><em class="num">0</em> 매</span>
+                                                </li>
+                                                <li class="li3">
+                                                    <strong style="padding-top:25px;"><br/> 1천만원</strong><span><em class="num">15</em> 매</span>
+                                                </li>
+                                                <li class="li4">
+                                                    <strong>출고율</strong><span><em class="num">99</em> %</span>
+                                                </li>
+                                            </ul>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slide_item">
+                                <div id="speetto2000" class="speetto-result" style="padding-top: 0px">
+                                    <strong class="tit">스피또 1000 <span>75</span>회</strong>
+                                    <!-- 190313 스피또 복권이미지영역 마크업 추가 -->
+                                    <div class="img_area" style="padding-bottom: 14px;">
+
+                                        <img src="img/board/content/1692764765861.png" alt="스피또 복권 이미지" />
+                                    </div>
+                                    <!-- //190313 스피또 복권이미지영역 마크업 추가 -->
+
+                                    <span class="date">[2023-10-27 기준]
+										<a href="javascript:openSpeettoPopup();" title="안내정보" >
+			                 				<img src="/images/common/ico_info.png" style="height: 16px;display: inline-block;width: auto;" alt="안내정보" title="안내정보">
+										</a>
+									</span>
+                                    <div class="quantity">
+                                        <strong class="tit">남은 수량</strong>
+                                        <a
+                                                href="/gameResult.do?method=speettoWin&lottoId=SP1000&wiselog=C_A_3_1">
+                                            <ul>
+                                                <li class="li1">
+                                                    <strong style="padding-top:25px;"><br/> 5억원</strong><span><em class="num">7</em> 매</span>
+                                                </li>
+                                                <li class="li2">
+                                                    <strong style="padding-top:25px;"><br/>2천만원</strong><span><em class="num">38</em> 매</span>
+                                                </li>
+                                                <li class="li3">
+                                                    <strong style="padding-top:25px;"><br/> 1만원</strong><span><em class="num">212,985</em> 매</span>
+                                                </li>
+                                                <li class="li4">
+                                                    <strong>출고율</strong><span><em class="num">48</em> %</span>
+                                                </li>
+                                            </ul>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slide_item">
+                                <div id="speetto2000" class="speetto-result" style="padding-top: 0px">
+                                    <strong class="tit">스피또 1000 <span>73</span>회</strong>
+                                    <!-- 190313 스피또 복권이미지영역 마크업 추가 -->
+                                    <div class="img_area" style="padding-bottom: 14px;">
+
+                                        <img src="img/board/content/1688691711364.png" alt="스피또 복권 이미지" />
+                                    </div>
+                                    <!-- //190313 스피또 복권이미지영역 마크업 추가 -->
+
+                                    <span class="date">[2023-10-27 기준]
+										<a href="javascript:openSpeettoPopup();" title="안내정보" >
+			                 				<img src="/images/common/ico_info.png" style="height: 16px;display: inline-block;width: auto;" alt="안내정보" title="안내정보">
+										</a>
+									</span>
+                                    <div class="quantity">
+                                        <strong class="tit">남은 수량</strong>
+                                        <a
+                                                href="/gameResult.do?method=speettoWin&lottoId=SP1000&wiselog=C_A_3_1">
+                                            <ul>
+                                                <li class="li1">
+                                                    <strong style="padding-top:25px;"><br/> 5억원</strong><span><em class="num">1</em> 매</span>
+                                                </li>
+                                                <li class="li2">
+                                                    <strong style="padding-top:25px;"><br/>2천만원</strong><span><em class="num">3</em> 매</span>
+                                                </li>
+                                                <li class="li3">
+                                                    <strong style="padding-top:25px;"><br/> 1만원</strong><span><em class="num">11,222</em> 매</span>
+                                                </li>
+                                                <li class="li4">
+                                                    <strong>출고율</strong><span><em class="num">100</em> %</span>
+                                                </li>
+                                            </ul>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slide_item">
+                                <div id="speetto2000" class="speetto-result"
+                                     style="padding-top: 0px">
+                                    <strong class="tit">스피또 500 <span>43</span>회</strong>
+                                    <!-- 190313 스피또 복권이미지영역 마크업 추가 -->
+                                    <div class="img_area" style="padding-bottom: 14px;">
+
+                                        <img src="img/board/content/1676946022722.png" alt="스피또 복권 이미지" />
+                                    </div>
+                                    <!-- //190313 스피또 복권이미지영역 마크업 추가 -->
+
+                                    <span class="date">[2023-10-27 기준]
+										<a href="javascript:openSpeettoPopup();" title="안내정보" >
+			                 				<img src="/images/common/ico_info.png" style="height: 16px;display: inline-block;width: auto;" alt="안내정보" title="안내정보">
+										</a>
+									</span>
+                                    <div class="quantity">
+                                        <strong class="tit">남은 수량</strong>
+                                        <a
+                                                href="/gameResult.do?method=speettoWin&lottoId=SP500&wiselog=C_A_3_1">
+                                            <ul>
+                                                <li class="li1">
+                                                    <strong style="padding-top:25px;"><br/> 2억원</strong><span><em class="num">2</em> 매</span>
+                                                </li>
+                                                <li class="li2">
+                                                    <strong style="padding-top:25px;"><br/>1백만원</strong><span><em class="num">19</em> 매</span>
+                                                </li>
+                                                <li class="li3">
+                                                    <strong style="padding-top:25px;"><br/> 5천원</strong><span><em class="num">46,203</em> 매</span>
+                                                </li>
+                                                <li class="li4">
+                                                    <strong>출고율</strong><span><em class="num">96</em> %</span>
+                                                </li>
+                                            </ul>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slide_item">
+                                <div id="speetto2000" class="speetto-result"
+                                     style="padding-top: 0px">
+                                    <strong class="tit">스피또 500 <span>42</span>회</strong>
+                                    <!-- 190313 스피또 복권이미지영역 마크업 추가 -->
+                                    <div class="img_area" style="padding-bottom: 14px;">
+
+                                        <img src="img/board/content/1650847052230.png" alt="스피또 복권 이미지" />
+                                    </div>
+                                    <!-- //190313 스피또 복권이미지영역 마크업 추가 -->
+
+                                    <span class="date">[2023-10-27 기준]
+										<a href="javascript:openSpeettoPopup();" title="안내정보" >
+			                 				<img src="/images/common/ico_info.png" style="height: 16px;display: inline-block;width: auto;" alt="안내정보" title="안내정보">
+										</a>
+									</span>
+                                    <div class="quantity">
+                                        <strong class="tit">남은 수량</strong>
+                                        <a
+                                                href="/gameResult.do?method=speettoWin&lottoId=SP500&wiselog=C_A_3_1">
+                                            <ul>
+                                                <li class="li1">
+                                                    <strong style="padding-top:25px;"><br/> 2억원</strong><span><em class="num">1</em> 매</span>
+                                                </li>
+                                                <li class="li2">
+                                                    <strong style="padding-top:25px;"><br/>1백만원</strong><span><em class="num">9</em> 매</span>
+                                                </li>
+                                                <li class="li3">
+                                                    <strong style="padding-top:25px;"><br/> 5천원</strong><span><em class="num">12,823</em> 매</span>
+                                                </li>
+                                                <li class="li4">
+                                                    <strong>출고율</strong><span><em class="num">100</em> %</span>
+                                                </li>
+                                            </ul>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="btn" style="text-align: center;margin-top:5px;">
+                    <span class="area"><a class="btn_common smid navy" href="javascript:openSpeettoPopup();" style="width: 200px;">출고율 안내사항 보기</a></span>
+                    <div />
+                    <!-- <div style='color: #fff;font-size: 11.5px;position: absolute;left: 0px;margin-left: 38px;margin-right: 38px;'>
+<strong style='color:#fff;'>* 출고율</strong><br/>
+동행복권에서 판매점으로 공급한 복권의 수량을 발행량으로 나눈 값으로, 실제 소비자에게 판매된 수량이 아닙니다.<br/>(출고율 = 출고량 / 발행량)
+</div> -->
+            </section>
+            <script type="text/javascript">
+                $(".spt_group .slide_inner").slick({
+                    slidesToShow: 1,
+                    infinite: true,
+                    arrows: true
+                });
+            </script>
+            <!-- //190225 신규 마크업 끝 -->
+            <!-- 로또 구입 관련 메세지 팝업 : 접근성 준수 처리를 위해 openPopLayer($('#alertLotto1'),$('#btnBuyLotto')); 이렇게 openPopLayer 함수 태워서 띄워주세요. -->
+            <div id="alertLotto1" class="popup_alert" style="display:none">
+                <div class="content">
+                    <p class="txt1">로또6/45복권 로또는<br>
+                        <strong>오전 6시부터 밤 12시까지만 구매</strong>할 수 있습니다.</p>
+                    <p class="txt2">토요일(추첨일) 오후 8시부터 <br>
+                        일요일 오전 6시이전까지는 구매불가합니다.</p>
+                </div>
+                <div class="btns">
+                    <a class="btn_common mid close" href="#">닫기</a>
+                </div>
+            </div>
+            <div id="alertLotto2" class="popup_alert" style="display:none">
+                <div class="content">
+                    <p class="txt1">로또6/45 <strong>인터넷 판매수량이 <br>모두 소진</strong>되었습니다. </p>
+                    <p class="txt2">다음 회차를 이용해 주세요.</p>
+                </div>
+                <div class="btns">
+                    <a class="btn_common mid close" href="#">닫기</a>
+                </div>
+            </div>
+            <!-- //로또 구입 관련 메세지 팝업 -->
+        </div>
+
+        <!-- 당첨자인터뷰 -->
+        <div class="wrap_box">
+            <section class="box interview_list">
+                <a class="more" href="/gameResult.do?method=highWin&wiselog=C_D_3_8">인터뷰 전체보기</a>
+                <ul class="list">
+
+
+                    <li>
+                        <a href="/gameResult.do?method=highWinView&wiselog=C_C_1_1&txtNo=14572">
+                            <p class="tit"><strong>연금복권720+</strong>
+                                <strong>
+
+                                    [1등]
+
+
+
+
+
+
+                                </strong>
+                            </p>
+                            <div class="img_area">
+                                <img width="194px" height="120px" src='/img/board/highwin/1698369746879.png' onerror="this.src='/images/result/logo_itv_def.jpg';" alt="당첨자 인터뷰" /></div>
+                            <p class="txt">'설마 내가 당첨되겠어?'라고 생각했는데 당첨됐어요.</p>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/gameResult.do?method=highWinView&wiselog=C_C_1_1&txtNo=14571">
+                            <p class="tit"><strong>스피또1000</strong>
+                                <strong>
+
+                                    [1등]
+
+
+
+
+
+
+                                </strong>
+                            </p>
+                            <div class="img_area">
+                                <img width="194px" height="120px" src='/img/board/highwin/1698369578936.png' onerror="this.src='/images/result/logo_itv_def.jpg';" alt="당첨자 인터뷰" /></div>
+                            <p class="txt">물고기가 많이 잡히더니, 1등 당첨의 행운까지!</p>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/gameResult.do?method=highWinView&wiselog=C_C_1_1&txtNo=14567">
+                            <p class="tit"><strong>스피또1000</strong>
+                                <strong>
+
+                                    [1등]
+
+
+
+
+
+
+                                </strong>
+                            </p>
+                            <div class="img_area">
+                                <img width="194px" height="120px" src='/img/board/highwin/1698199932846.png' onerror="this.src='/images/result/logo_itv_def.jpg';" alt="당첨자 인터뷰" /></div>
+                            <p class="txt">사장님! 이거 당첨 맞죠?!</p>
+                        </a>
+                    </li>
+
+
+                </ul>
+            </section>
+        </div>
+
+        <div class="wrap_box wrap2">
+            <section class="box inbok">
+                <header>
+                    <h2>전자복권</h2>
+                    <a class="more" href="/gameInfo.do?method=inetbokBuyInfo">전자복권 안내 페이지로 이동</a>
+                </header>
+                <div class="content">
+                    <ul>
+                        <li>
+                            <a class="pic" href="/gameInfo.do?method=game720Method&wiselog=C_B_9_1">
+                                <span id="layer_lp32" class="ico_"></span>
+                                <!-- <img src="/images/main/img_inbok_520.jpg" alt="연금복권 520"> -->
+                                <img src="/images/main/img_inbok_720.jpg" alt="연금복권 720+">
+                            </a>
+                            <a class="btn_common smid gblu" style="width:100%"
+                               href="javascript:goGamePnInfo('LP72', 2, 'N');" title="새창 열림"
+                               onclick="javascript:goWiseLogMain('&wiselog=C_B_9_2');">구매하기</a>
+
+                        </li>
+                        <li>
+                            <a class="pic" href="/gameInfo.do?method=lottoMainView&lottoId=LD14&wiselog=C_B_2_1">
+                                <span id="layer_ld14" class="ico_none"></span>
+                                <img src="/images/main/img_inbok_pb.jpg" alt="파워볼">
+                            </a>
+                            <a class="btn_common smid gblu" style="width:100%"
+                               href="javascript:goGameElEnInfo('LD14', 2, 'N', 'N');" title="새창 열림"
+                               onclick="javascript:goWiseLogMain('&wiselog=C_B_2_2');">구매하기</a>
+
+                        </li>
+                        <li>
+                            <a class="pic" href="/gameInfo.do?method=lottoMainView&lottoId=LD10&wiselog=C_B_3_1">
+                                <span id="layer_ld10" class="ico_none"></span>
+                                <img src="/images/main/img_inbok_sk.jpg" alt="스피드키노">
+                            </a>
+                            <a class="btn_common smid gblu" style="width:100%"
+                               href="javascript:goGameElEnInfo('LD10', 2, 'N', 'N');" title="새창 열림"
+                               onclick="javascript:goWiseLogMain('&wiselog=C_B_3_2');">구매하기</a>
+
+                        </li>
+                        <li>
+                            <a class="pic" href="/gameInfo.do?method=lottoMainView&lottoId=LD11&wiselog=C_B_4_1">
+                                <span id="layer_ld11" class="ico_none"></span>
+                                <img src="/images/main/img_inbok_mb.jpg" alt="메가빙고">
+                            </a>
+                            <a class="btn_common smid gblu" style="width:100%"
+                               href="javascript:goGameElEnInfo('LD11', 2, 'N', 'N');" title="새창 열림"
+                               onclick="javascript:goWiseLogMain('&wiselog=C_B_4_2');">구매하기</a>
+
+                        </li>
+                        <li>
+                            <a class="pic" href="/gameInfo.do?method=lottoMainView&lottoId=LI21&wiselog=C_B_5_1">
+                                <span id="layer_li21" class="ico_none"></span>
+                                <img src="/images/main/img_inbok_tl.jpg" alt="트리플럭">
+                            </a>
+                            <a class="btn_common smid gblu" style="width:100%"
+                               href="javascript:goGameElInfo('LI21', 2, 'Y');" title="새창 열림"
+                               onclick="javascript:goWiseLogMain('&wiselog=C_B_5_2');">구매하기</a>
+
+                        </li>
+                        <li>
+                            <a class="pic" href="/gameInfo.do?method=lottoMainView&lottoId=LI22&wiselog=C_B_6_1">
+                                <span id="layer_li22" class="ico_none"></span>
+                                <img src="/images/main/img_inbok_th.jpg" alt="트레져헌터">
+                            </a>
+                            <a class="btn_common smid gblu" style="width:100%"
+                               href="javascript:goGameElInfo('LI22', 2, 'N');" title="새창 열림"
+                               onclick="javascript:goWiseLogMain('&wiselog=C_B_6_2');">구매하기</a>
+
+                        </li>
+                        <li>
+                            <a class="pic" href="/gameInfo.do?method=lottoMainView&lottoId=LI23&wiselog=C_B_7_1">
+                                <span id="layer_li23" class="ico_none"></span>
+                                <img src="/images/main/img_inbok_cm.jpg" alt="캐치미">
+                            </a>
+                            <a class="btn_common smid gblu" style="width:100%"
+                               href="javascript:goGameElInfo('LI23', 2, 'N');" title="새창 열림"
+                               onclick="javascript:goWiseLogMain('&wiselog=C_B_7_2');">구매하기</a>
+
+                        </li>
+                        <li>
+                            <a class="pic" href="/gameInfo.do?method=lottoMainView&lottoId=LD20&wiselog=C_B_8_1">
+                                <span id="layer_ld20" class="ico_none"></span>
+                                <img src="/images/main/img_inbok_dj.jpg" alt="더블잭마이더스">
+                            </a>
+                            <a class="btn_common smid gblu" style="width:100%"
+                               href="javascript:goGameElInfo('LD20', 2, 'N');" title="새창 열림"
+                               onclick="javascript:goWiseLogMain('&wiselog=C_B_8_2');">구매하기</a>
+
+                        </li>
+                    </ul>
+                </div>
+            </section>
+            <section class="box jackpot">
+                <header>
+                    <h2><span>실시간 1등 누적 당첨금</span></h2>
+                </header>
+                <div class="content">
+                    <ul>
+                        <li><span>파워볼</span><strong id="powerballJ">조회중</strong><span class="accessibility">원</span>
+                        </li>
+                        <li><span>스피드키노</span><strong id="speedKinoJ">조회중</strong><span class="accessibility">원</span>
+                        </li>
+                        <li><span>메가빙고</span><strong id="megaBingoJ">조회중</strong><span class="accessibility">원</span>
+                        </li>
+                        <li><span>트리플럭</span><strong id="">500,000,000</strong><span class="accessibility">원</span>
+                        </li>
+                        <li><span>캐치미</span><strong id="catchMeJ">10,000,000</strong><span class="accessibility">원</span>
+                        </li>
+                        <li><span>트레져헌터</span><strong id="tHunterJ">조회중</strong><span class="accessibility">원</span>
+                        </li>
+                        <li><span>더블잭마이더스</span><strong id="doubleJackJ">조회중</strong><span class="accessibility">원</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+        <div class="wrap_box wrap3">
+
+            <div class="box board">
+                <section id="divBoard" class="inner">
+                    <div class="wrap wrap1 active">
+                        <h2><a href="#divBoard1" onclick="changeBoard(1); return false">공지사항</a></h2>
+                        <ul id="divBoard1">
+
+
+                            <li><a href="/service.do?method=noticeView&wiselog=C_C_1_3&noticeSerial=239">
+                                <strong title="(10/31 화) 사이트 점검 안내">(10/31 화) 사이트 점검 안내</strong>
+
+                            </a><span class="date">2023.10.26</span></li>
+
+
+
+                            <li><a href="/service.do?method=noticeView&wiselog=C_C_1_3&noticeSerial=240">
+                                <strong title="트리플럭 판매 중지 안내">트리플럭 판매 중지 안내</strong>
+
+                            </a><span class="date">2023.10.26</span></li>
+
+
+
+                            <li><a href="/service.do?method=noticeView&wiselog=C_C_1_3&noticeSerial=238">
+                                <strong title="10월 17일 실물복권 없이 당첨금 수령 유튜버(허팝) 영상 관련 안내">10월 17일 실물복권 없이 당첨금 수령 유튜버(허팝) 영상 관련 안내</strong>
+
+                            </a><span class="date">2023.10.18</span></li>
+
+
+
+                            <li><a href="/service.do?method=noticeView&wiselog=C_C_1_3&noticeSerial=237">
+                                <strong title="전자복권 판매중단 사전 안내">전자복권 판매중단 사전 안내</strong>
+
+                            </a><span class="date">2023.10.10</span></li>
+
+
+
+                            <li><a href="/service.do?method=noticeView&wiselog=C_C_1_3&noticeSerial=236">
+                                <strong title="스피또2000 사전 안내 정정">스피또2000 사전 안내 정정</strong>
+
+                            </a><span class="date">2023.10.06</span></li>
+
+
+
+                            <li><a href="/service.do?method=noticeView&wiselog=C_C_1_3&noticeSerial=235">
+                                <strong title="(9/24 일) 사이트 점검 안내">(9/24 일) 사이트 점검 안내</strong>
+
+                            </a><span class="date">2023.09.23</span></li>
+
+
+
+                            <li><a href="/service.do?method=noticeView&wiselog=C_C_1_3&noticeSerial=233">
+                                <strong title="항저우 아시안게임 축구 예선 중계로 인한 연금복권 720+ 추첨방송 시간 변경 안내">항저우 아시안게임 축구 예선 중계로 인한 연금복권 720+ 추첨방송 시간 변경 안내</strong>
+
+                            </a><span class="date">2023.09.20</span></li>
+
+
+
+                            <li><a href="/service.do?method=noticeView&wiselog=C_C_1_3&noticeSerial=232">
+                                <strong title="개인정보 처리방침 개정 안내">개인정보 처리방침 개정 안내</strong>
+
+                            </a><span class="date">2023.09.19</span></li>
+
+
+
+                            <li><a href="/service.do?method=noticeView&wiselog=C_C_1_3&noticeSerial=231">
+                                <strong title="(8/23 수) 사이트 점검 안내">(8/23 수) 사이트 점검 안내</strong>
+
+                            </a><span class="date">2023.08.21</span></li>
+
+
+
+
+                        </ul>
+                        <a class="more" href="/service.do?method=noticeList&wiselog=C_C_1_2">공지사항 더 보기</a>
+                    </div>
+                    <div class="wrap wrap2">
+                        <h2><a href="#divBoard2" onclick="changeBoard(2); return false">언론보도</a></h2>
+                        <ul id="divBoard2">
+
+
+                            <li><a href="/happy.do?method=fundPressPrView&wiselog=C_C_1_5&txtNo=2012">
+                                <strong title="’23.8.30. 파이낸셜뉴스 기사「즉석복권 또 반품처리...“인쇄 불량”」 관련 보도 설명">’23.8.30. 파이낸셜뉴스 기사「즉석복권 또 반품처리...“인쇄 불량”」 관련 보도 설명</strong>
+                            </a><span class="date">2023.08.31</span></li>
+
+
+
+                            <li><a href="/happy.do?method=fundPressPrView&wiselog=C_C_1_5&txtNo=2011">
+                                <strong title="경실련 정정자료, 인쇄업체 선정 입찰에서 탈락한 업체의 허위 제보에 바탕, 사실과 다릅니다.">경실련 정정자료, 인쇄업체 선정 입찰에서 탈락한 업체의 허위 제보에 바탕, 사실과 다릅니다.</strong>
+                            </a><span class="date">2023.08.29</span></li>
+
+
+
+                            <li><a href="/happy.do?method=fundPressPrView&wiselog=C_C_1_5&txtNo=2019">
+                                <strong title="‘32억’ 로또복권 1등 미수령 당첨금 찾아가세요!">‘32억’ 로또복권 1등 미수령 당첨금 찾아가세요!</strong>
+                            </a><span class="date">2023.08.28</span></li>
+
+
+
+                            <li><a href="/happy.do?method=fundPressPrView&wiselog=C_C_1_5&txtNo=2010">
+                                <strong title="경실련 보도자료, 악의적 허위 제보로 사실 아니다">경실련 보도자료, 악의적 허위 제보로 사실 아니다</strong>
+                            </a><span class="date">2023.08.25</span></li>
+
+
+
+                            <li><a href="/happy.do?method=fundPressPrView&wiselog=C_C_1_5&txtNo=2018">
+                                <strong title="복권기금, 미래 세대 위한 ‘온라인 수학·과학 가상실험실’ 구축 지원">복권기금, 미래 세대 위한 ‘온라인 수학·과학 가상실험실’ 구축 지원</strong>
+                            </a><span class="date">2023.08.21</span></li>
+
+
+
+                            <li><a href="/happy.do?method=fundPressPrView&wiselog=C_C_1_5&txtNo=2017">
+                                <strong title="복권기금, “고효율 냉방기 설치”로 취약계층 돕는다">복권기금, “고효율 냉방기 설치”로 취약계층 돕는다</strong>
+                            </a><span class="date">2023.08.16</span></li>
+
+
+
+                            <li><a href="/happy.do?method=fundPressPrView&wiselog=C_C_1_5&txtNo=2015">
+                                <strong title="‘복권위원회 및 동행복권 사칭’ 피싱 사기 주의하세요!">‘복권위원회 및 동행복권 사칭’ 피싱 사기 주의하세요!</strong>
+                            </a><span class="date">2023.08.10</span></li>
+
+
+
+                            <li><a href="/happy.do?method=fundPressPrView&wiselog=C_C_1_5&txtNo=2016">
+                                <strong title="복권기금, 결식아동 급식 단가 현실화 위해 급식비 지원 확대">복권기금, 결식아동 급식 단가 현실화 위해 급식비 지원 확대</strong>
+                            </a><span class="date">2023.07.25</span></li>
+
+
+
+                            <li><a href="/happy.do?method=fundPressPrView&wiselog=C_C_1_5&txtNo=2014">
+                                <strong title="복권기금, K-문화유산 가치 알리는 고품질 콘텐츠 제작·보급 지원">복권기금, K-문화유산 가치 알리는 고품질 콘텐츠 제작·보급 지원</strong>
+                            </a><span class="date">2023.07.10</span></li>
+
+
+
+
+                        </ul>
+                        <a class="more" href="/happy.do?method=fundPressPrList&wiselog=C_C_1_4">언론보도 더 보기</a>
+                    </div>
+                </section>
+            </div>
+            <section class="box fund">
+                <h2><span>판매액의 42%이상</span>이 복권기금이 <br>되어 소외계층에 사용되고 있습니다.</h2>
+                <ul>
+                    <li>법정배분사업</li>
+                    <li>주거안정사업</li>
+                    <li>소외계층사업</li>
+                    <li>문화예술사업</li>
+                </ul>
+                <p><span>2023년 복권기금 누적액</span><strong>&#8361; 2,319,060,446,115</strong></p>
+                <a class="link" href="/happy.do?method=fundInfo&wiselog=C_C_2_1">복권기금 알아보기</a>
+            </section>
+            <div class="box happyplus">
+                <a
+                        href="/myPage.do?method=joinNewsLetterInput&wiselog=C_C_2_2"><strong>행복더하기 신청</strong><span>매일 새로운 복권소식과 <br>함께하세요.</span></a>
+            </div>
+            <section class="box quicklink">
+                <h2 class="accessibility">바로가기</h2>
+                <ul>
+                    <li class="q1"><a href="https://cafe.naver.com/dhlottery" target="_blank"
+                                      title="새창(동행복권 카페로 이동)"><span><strong>동행복권 Cafe</strong>함께하는 재미와 이벤트!</span></a></li>
+                    <li class="q2"><a href="https://blog.naver.com/donghanglottery1004" target="_blank"
+                                      title="새창(동행복권 블로그로 이동)"><span><strong>동행복권 Blog</strong>다양한 재미가 팡팡!</span></a></li>
+                    <li class="q3"><a href="https://www.facebook.com/donghanglottery/" target="_blank"
+                                      title="새창(동행복권 페이스북으로 이동)"><span><strong>동행복권 Facebook</strong>친구신청으로 이벤트 정보가 쏙쏙!</span></a>
+                    </li>
+                    <li class="q4"><a href="https://www.youtube.com/channel/UCEk3VwaA6e4H9TW1vSXOjDA/featured"
+                                      target="_blank"
+                                      title="새창(동행복권 유투브로 이동)"><span><strong>동행복권 YouTube</strong>복권에 대한 영상 정보를 보는 곳!</span></a>
+                    </li>
+                    <li class="q5"><a href="http://happyplus-dhlottery.kr/" target="_blank"
+                                      title="새창(동행복권 뉴스레터로 이동)"><span><strong>동행복권 News Letter</strong>복권에 대한 알찬 정보가 있는 곳!</span></a>
+                    </li>
+                    <!-- <li class="app">
+                <ul>
+                    <li class="a1"><a href="#" onclick="alert('서비스 준비중입니다')"><span><strong>iOS APP</strong>앱스토어 바로가기</span></a></li>
+                    <li class="a2"><a href="#" onclick="alert('서비스 준비중입니다')"><span><strong>안드로이드 APP</strong>원스토어 바로가기</span></a></li>
+                    <li><a href="https://itunes.apple.com/kr/app/id1444390490" target="_blank" title="새창(동행복권 iOS 앱 다운로드 페이지로 이동)"><span><strong>iOS APP</strong>앱 스토어 바로가기</span></a></li>
+                    <li><a href="http://onesto.re/0000734850" target="_blank" title="새창(동행복권 안드로이드 앱 다운로드페이지로 이동)"><span><strong>안드로이드 APP</strong>원 스토어 바로가기</span></a></li>
+                </ul>
+
+            </li> -->
+                    <li class="q6">
+                        <a href="#"
+                           onclick="$('#layerQrApp').show(); return false;"><span><strong>동행복권 공식 APP</strong>모든 복권 정보가 한곳에!</span></a>
+                        <div id="layerQrApp" class="popup_alert popup-qrcode">
+                            <div class="content"><img src="/images/main/img-qr-app.png"></div>
+                            <a href="#"
+                               onclick="$('#layerQrApp').hide(); return false;"><img src="/images/common/btn_close_layerpop.png" alt="닫기"></a>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+            <section class="box care">
+                <h2>도박중독, 복권과몰입<br>전문 상담기구</h2>
+                <strong class="name">동행클린센터</strong>
+                <p>도박문제 전문상담 <strong>080-800-0501</strong></p>
+                <!-- 181226 링크추가 -->
+                <a href="https://clean.dhlottery.co.kr/" target="_blank" title="새창(동행클린센터 페이지로 이동)"
+                   class="link">동행클린센터 페이지로 이동하기</a>
+                <ul>
+                    <li class="s1"><a href="/myPage.do?method=campainTest&wiselog=C_C_3_1">셀프 진단평가</a></li>
+                    <li class="s2"><a href="/myPage.do?method=campainProgram&wiselog=C_C_3_1">셀프 구매계획</a></li>
+                    <li class="s3"><a href="/myPage.do?method=campainProgram2&wiselog=C_C_3_1">셀프 휴식계획</a></li>
+                </ul>
+            </section>
+        </div>
+
+        <div class="link_out">
+            <ul class="bottom_banner clearfx">
+                <li><a href="http://www.bokgwon.go.kr/" title="복권위원회"
+                       target="_blank"><img src="/images/main/img_link1.gif" alt="복권위원회"></a></li>
+                <li><a href="http://www.ngcc.go.kr/" title="사행산업통합감독위원회"
+                       target="_blank"><img src="/images/main/img_link2.gif" alt="사행산업통합감독위원회" /></a></li>
+                <li><a href="http://www.kcgp.or.kr/" title="한국도박문제예방치유원"
+                       target="_blank"><img src="/images/main/img_link3.gif" alt="한국도박문제예방치유원" /></a></li>
+                <li><a href="http://www.world-lotteries.org" title="World Lottery Association"
+                       target="_blank"><img src="/images/main/img_link4.gif" alt="WLA(World Lottery Association)" /></a>
+                </li>
+                <li><a href="http://www.asiapacific-lotteries.com" title="Asia Pacific Lottery Association"
+                       target="_blank"><img src="/images/main/img_link5.gif" alt="APLA(Asia Pacific Lottery Association)" /></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <iframe name="wiseForm" id="wiseForm" width="0" height="0" title="wiselog"></iframe>
+    <form name="wisefrm" id="wisefrm" method="post"></form>
+    <script type="text/javascript">
+        function goWiseLogMain(wiselog){
+            if(wiselog != undefined && wiselog != 'undefined' && wiselog != ''){
+                var f = document.wisefrm;
+                f.target="wiseForm";
+                f.action = "/common.do?method=wiselog"+wiselog;
+                f.submit();
+                f.target = "_self";
+            }
+        }
+    </script>
+
+
+
+
+
+
+
+    <!--모달팝업레이어 추가-->
+    <div class="layer">
+        <div class="bg"></div>
+        <div class="layer_area" id="layer1">
+            <div class="layer_top">아래 QR 코드를 휴대폰으로 촬영해주세요.<br>케이뱅크 계좌 개설 페이지로 이동합니다.</div>
+            <div class="layer_img"><img src="images/event/kbank.jpg"></div>
+            <div class="layer_btn"><a href="#" id="layer_close">닫기</a></div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        jQuery(function($){
+            function layer_open(el){
+                $('.layer').fadeIn();
+                var temp = $('#' + el);
+                if (temp.outerHeight() < $(document).height() ) temp.css('margin-top', '-'+temp.outerHeight()/2+'px');
+                else temp.css('top', '0px');
+                if (temp.outerWidth() < $(document).width() ) temp.css('margin-left', '-'+temp.outerWidth()/2+'px');
+                else temp.css('left', '0px');
+            }
+
+            $('#layer_open').click(function(){
+                layer_open('layer1');
+                return false;
+            });
+
+            $('#layer_close').click(function(){
+                $('.layer').fadeOut();
+                return false;
+            });
+        });
+    </script>
+    <!--//모달팝업레이어 추가-->
+
+</div><!-- //pc일 경우 컨텐츠 영역 감싸는 마크업 추가  -->
+
+<!-- 접속대기 레이어 -->
+<div id="popWaitConnect" class="wrap_pop_layer" style="display:none">
+    <div class="popup_layer popup_waiting">
+        <div class="header_layer">
+            <h2>접속대기 안내</h2>
+            <a class="close" href="#">닫기</a>
+        </div>
+        <div class="status">
+            <p class="m1"><strong>서비스연결 대기중</strong>입니다. <span>대기 순서에 따라 자동 접속됩니다.</span></p>
+            <div class="circle"><span>접속 대기중</span></div>
+            <p class="m2">현재 대기 인원 : <strong id="popWaitCount">총 1,200명</strong><br>예상 대기 시간 :
+                <strong id="popWaitTime">약 5분 30초</strong></p>
+        </div>
+        <div class="noti">
+            <h3>유의사항</h3>
+            <ul class="list_text_common">
+                <li>새로고침 또는 뒤로가기를 하면 다시 대기시간이 부여됩니다.</li>
+            </ul>
+        </div>
+        <div class="btns_bottom">
+            <a class="btn_common mid close" href="#">대기종료</a>
+        </div>
+    </div>
+</div>
+<!-- //접속대기 레이어 -->
+
+<footer id="footer" class="footer">
+    <!-- <div class="footer_container">
+<div class="footer_wrap"> -->
+    <h3 class="hide">하단메뉴</h3>
+    <ul class="foot_menu">
+        <li class="fisrt"><a id="eeeee" href="/clause.do?method=footerUseClause&wiselog=F_A_1_1">이용약관</a>
+        </li>
+        <li><strong><a href="/clause.do?method=footerPrivate&wiselog=F_A_1_2">개인정보 처리방침</a></strong></li>
+        <li><strong><a href="javascript:popup_payment_2();"  onclick="javascript:goWiseLogMain('&wiselog=F_A_1_3');">인쇄복권당첨금지급기준</a></strong>
+        </li>
+
+        <li><a href="/clause.do?method=reportCenterList&wiselog=F_A_1_4">불법사행행위신고센터</a></li>
+        <li><a href="/company.do?method=footerInfo&wiselog=F_A_1_5">수탁사업자소개</a></li>
+        <li><a href="javascript:popupEngPage();"
+               onclick="javascript:goWiseLogMain('&wiselog=F_A_1_6');">ENGLISH</a></li>
+        <li><a href="javascript:void(0)" onclick="popupSalesPage('N');">온라인복권 신규판매인 인터넷 신청</a></li>
+        <li><a href="javascript:void(0)" onclick="popup_inform();">인쇄복권판매인전용공지</a></li>
+    </ul>
+    <div class="foot_inner">
+        <div class="foot_txt_wrap">
+            <div class="logo">
+                <div class="inner">
+                    <strong class="dh">동행복권</strong>
+                    <a href="javascript:goFacPop()" class="btn_foot" title="새창 열림">사업자정보확인</a>
+                </div>
+            </div>
+            <div class="foot_txt1">
+                <p>수탁사업자 (주)동행복권 <span class="ml15">주소 : 06719 서울 서초구 남부순환로 2423 한원빌딩 4층</span>
+                    <span class="ml15">고객문의 1588-6450</span> <span class="ml15">FAX 02-6933-3063</span></p>
+                <p>대표자 : 조형섭, 홍덕기 <span class="ml15">사업자등록번호 866-87-00833</span>
+                    <span class="ml15">통신판매사업자번호 : 제2018 - 서울서초 - 2075호</span>
+                    <!-- <span class="ml15"><a href="javascript:goFacPop()" class="btn_foot">사업자정보확인 &gt;</a></span> -->
+                </p>
+            </div>
+            <div class="foot_txt2">
+                <p>Copyright (c) 2018 복권위원회&amp;동행복권. All rights reserved</p>
+                <p>본 홈페이지는 게시된 이메일 주소가 자동 수집되는 것을 거부하며, 이를 위반시 정보통신망법에 의해 처벌됨을 유념하여 주시길 바랍니다.</p>
+                <p class="f_blue2">청소년은 복권을 구매하거나 당첨금을 수령할 수 없습니다.</p>
+            </div>
+            <div class="foot_txt2">
+                <p>본 사이트는 Internet Explorer 11, Edge, Chrome, Safari 브라우저에 최적화되어 있습니다.</p>
+            </div>
+            <div class="mark1"><img src="/images/layout/certified_mark.jpg" alt="certified_mark"></div>
+        </div>
+
+
+    </div>
+    <!-- </div>
+</div> -->
+</footer>
+<!-- //footer -->
+
+<script type="text/javascript">
+    //$$js_import$$("pohe_kr.m.theme.Collapsible", null, "phone");
+
+    function goFacPop(){
+        window.open('http://www.ftc.go.kr/info/bizinfo/communicationViewPopup.jsp?wrkr_no=8668700833', 'fac' , 'width=730, height=658, left=0, top=0, status=no, toolbar=no, menubar=no, location=no');
+    }
+
+    function popup_payment_2(){
+        var url = "/jspcall.do?method=call&url=gameResult/paymentStandard720";
+        commonPop("", url, 817, 750, 'yes');
+    }
+
+    function popupEngPage(){
+        window.open('/en/html/Introduction.html', 'engPage' , 'width=1277, height=960, left=0, top=0, status=yes, resizable=yes, scrollbars=yes, toolbar=no, menubar=no, location=no');
+    }
+
+    function popupSalesPage(pageUseYn) {
+        if (pageUseYn == "Y") {
+            var strUrl = "https://sales.dhlottery.co.kr/";
+            var strOption = "width=1280, height=960, top=0, left=0, location=yes, menubar=yes, resizable=yes, scrollbars=yes, status=yes, toolbar=yes";
+            var new_popup = window.open(strUrl, 'salesPage', strOption);
+        } else {
+            alert("신청기간이 아닙니다.");
+        }
+    }
+
+    function popup_inform(){
+        var url = "/jspcall.do?method=call&url=gameResult/printLottoSalesInform";
+        commonPop("", url, 817, 750, 'yes');
+    }
+</script>
+<script>
+    $(document).ready(function(){
+        var valueDefault = $(".topLogin .top_userid").prop('value');
+
+        if (valueDefault == '' ) {
+            $(".topLogin .label_id").show();
+        } else {
+            $(".topLogin .label_id").hide();
+        }
+        $(".topLogin label").click(function(){
+            $(this).next().focus();
+        });
+        $(".topLogin input").focus(function(){
+            $(this).prev().hide();
+        });
+        $(".topLogin input").focusout(function(){
+            var value = $(this).prop('value');
+
+            if (value == '' ) {
+                $(this).prev().show();
+            } else {
+                return false;
+            }
+        });
+
+    });
+</script>
+
+
+
+
+<aside id="asideQuick" class="quic_aside">
+    <a href="#" class="toggle">퀵메뉴열기</a>
+    <div class="inner">
+        <ul class="prog">
+            <li class="p0"><a href="/gameResult.do?method=notReceiveInfo">미수령<br>당첨금</a></li>
+            <li class="p1"><a href="/myPage.do?method=enjoyEval">나의복권<br>건전지수</a></li>
+            <li class="p2"><a href="/happy.do?method=healthCultureProc">건전구매<br>캠페인</a></li>
+            <li class="p3"><a href="/user.do?method=campainVow">건전구매<br>서약</a></li>
+            <li class="p4"><a href="/myPage.do?method=campainTest">자기관리<br>프로그램</a></li>
+            <li class="p5"><a href="https://clean.dhlottery.co.kr/" target="_blank"
+                              title="새창 열림">동행<br>클린센터</a></li>
+            <li class="p6"><a href="/hero.do?method=info">동행<br>히어로</a></li>
+        </ul>
+    </div>
+    <div class="top"><a href="#skipnavigation">위로가기</a></div>
+</aside>
+<script type="text/javascript">
+    $(document).ready(function(){
+        var spread;
+        var min4quick = 1420;
+        var bodyw = $("body").prop("clientWidth");
+        var aside = $("#asideQuick");
+        var btn = aside.find(".toggle");
+        $(window).resize(function(){
+            bodyw = $("body").prop("clientWidth");
+            if(bodyw < min4quick){
+                aside.css("right","-86px");
+                aside.addClass("fold");
+                spread = false;
+            }else{
+                aside.css("right","0");
+                aside.removeClass("fold");
+                spread = true;
+            }
+        }).resize();
+        btn.click(function(e){
+            e.preventDefault();
+            if(spread == true){
+                aside.animate({right:-86},300);
+                btn.removeClass("opened");
+                spread = false;
+            }else{
+                aside.animate({right:0},300);
+                btn.addClass("opened");
+                spread = true;
+            }
+
+        });
+    });
+</script>
+
+</body>
+
+</html>
