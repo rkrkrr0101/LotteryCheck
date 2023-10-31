@@ -16,7 +16,7 @@ import org.junit.jupiter.api.BeforeEach
 class CheckServiceTest {
     lateinit var checkService: CheckService
     lateinit var calculateEfficiency:List<SpeettoEfficiencyResponseDto>
-    val answerList=mutableListOf<SpeettoEfficiencyResponseDto>()
+    val answerList=mutableListOf<SpeettoEfficiencyResponseDto>()//정답리스트
     @BeforeEach
     fun init(){
         checkService= CheckService(CrawlManagerImpl(),FakeJsoupManager())
