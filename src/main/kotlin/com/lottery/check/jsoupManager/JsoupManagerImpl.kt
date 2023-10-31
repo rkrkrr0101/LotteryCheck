@@ -1,8 +1,7 @@
-package com.lottery.check.JsoupManager
+package com.lottery.check.jsoupManager
 
 import org.jsoup.Connection
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.springframework.stereotype.Component
 

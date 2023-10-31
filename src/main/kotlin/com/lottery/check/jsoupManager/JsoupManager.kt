@@ -1,4 +1,4 @@
-package com.lottery.check.JsoupManager
+package com.lottery.check.jsoupManager
 
 import org.jsoup.Connection
 import org.jsoup.select.Elements

@@ -5,8 +5,6 @@ import com.lottery.check.speetto.domain.Speetto
 import com.lottery.check.speetto.domain.Speetto1000
 import com.lottery.check.speetto.domain.Speetto2000
 import com.lottery.check.speetto.domain.Speetto500
-import org.jsoup.Connection
-import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.springframework.stereotype.Component

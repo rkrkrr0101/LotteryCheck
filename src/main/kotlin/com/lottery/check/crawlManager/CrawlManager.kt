@@ -1,7 +1,6 @@
 package com.lottery.check.crawlManager
 
 import com.lottery.check.speetto.domain.Speetto
-import org.jsoup.Connection
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 

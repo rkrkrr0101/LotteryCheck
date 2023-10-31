@@ -1,9 +1,8 @@
 package com.lottery.check.jsoupmanager
 
-import com.lottery.check.JsoupManager.JsoupManager
+import com.lottery.check.jsoupManager.JsoupManager
 import org.jsoup.Connection
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import java.io.File
 

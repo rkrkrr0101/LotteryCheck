@@ -1,8 +1,7 @@
 package com.lottery.check.service
 
-import com.lottery.check.JsoupManager.JsoupManager
+import com.lottery.check.jsoupManager.JsoupManager
 import com.lottery.check.crawlManager.CrawlManager
-import com.lottery.check.crawlManager.CrawlManagerImpl
 import com.lottery.check.speetto.dto.SpeettoEfficiencyResponseDto
 import com.lottery.check.speetto.speetto_const.SPEETTO_CRAWLING
 import org.jsoup.select.Elements
